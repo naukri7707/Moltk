@@ -1,0 +1,27 @@
+{
+    "name": "Naukri.Moltk.Editor.Tests",
+    "rootNamespace": "",
+    "references": [
+        "Naukri.Moltk",
+        "Naukri.Moltk.Editor",
+        "Naukri.InspectorMaid",
+        "Naukri.InspectorMaid.Editor",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
