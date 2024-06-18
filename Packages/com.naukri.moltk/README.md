@@ -19,9 +19,16 @@ Moltk 是一款簡便的機械操作訓練開發工具包,旨在協助開發者�
 - [Newtonsoft Json Unity Package-0.8.5](https://docs.unity3d.com/Packages/com.unity.nuget.newtonsoft-json@3.0/manual/index.html) 
 - [UnityFx.Outline-3.2.1](https://github.com/Arvtesh/UnityFx.Outline)
 
-**快速安裝** 要快速安裝 Moltk,請按照以下步驟操作:
+## 快速安裝
+ 
+要快速安裝 Moltk,請按照以下步驟操作:
 
-1. 安裝相依套件
-2. 在 PackageManager 中點擊左上角的 + 號並選擇 `Add package form git URL...` 然後貼以下網址。
-> https://github.com/naukri7707/Moltk.git
-4. 完成後即可使用，首次使用可以參考專案附帶的 Sample Scene。
+1. 建立一個 Unity 版本 2022.3.11f1 或以上的專案
+2. 安裝 Inspector Maid 和 UnityFx.Outline
+3. 在 PackageManager 中點擊左上角的 + 號並選擇 `Add package form git URL...` 然後貼以下網址。
+
+    ```bash
+    https://github.com/naukri7707/Moltk.git
+    ```
+
+4. 完成後即可使用 Moltk，首次使用可以參考專案附帶的 Sample Scene。
