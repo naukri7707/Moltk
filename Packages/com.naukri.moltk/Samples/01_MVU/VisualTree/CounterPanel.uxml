@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="container" style="flex-grow: 1; flex-direction: column; flex-basis: 0; flex-wrap: wrap; align-items: center; justify-content: center; align-self: center;">
+        <ui:Label tabindex="-1" text="0" parse-escape-sequences="true" display-tooltip-when-elided="true" name="number-label" style="align-items: center; justify-content: center; align-self: center; font-size: 128px; -unity-text-align: upper-center;" />
+        <ui:VisualElement name="buttons-container" style="flex-grow: 0; flex-direction: row; align-items: center; align-self: center; justify-content: center; height: 50px; flex-shrink: 10;">
+            <ui:Button text="Add One" parse-escape-sequences="true" display-tooltip-when-elided="true" name="add-button" style="width: 100px;" />
+            <ui:Button text="Reset" parse-escape-sequences="true" display-tooltip-when-elided="true" name="reset-button" style="width: 100px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

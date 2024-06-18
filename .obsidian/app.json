@@ -1,0 +1,13 @@
+{
+  "alwaysUpdateLinks": true,
+  "useMarkdownLinks": true,
+  "userIgnoreFilters": [
+    "Library/",
+    "Logs/",
+    "obj/",
+    "UIElementsSchema/",
+    "UserSettings/",
+    "ProjectSettings/",
+    "Temp/"
+  ]
+}

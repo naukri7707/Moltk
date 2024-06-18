@@ -1,0 +1,51 @@
+{
+  "name": "com.naukri.moltk",
+  "version": "0.1.0",
+  "author": "Naukri",
+  "displayName": "Moltk",
+  "description": "A simple toolkit for vr machine operation training.",
+  "unity": "2022.3",
+  "dependencies": {
+    "com.unity.xr.interaction.toolkit": "2.5.2",
+    "com.naukri.inspector-maid": "2.12.2",
+    "com.unityfx.outline": "0.8.5",
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  },
+  "samples": [
+    {
+      "displayName": "Install Me",
+      "description": "",
+      "path": "Samples~/Utility"
+    },
+    {
+      "displayName": "01. MVU",
+      "description": "",
+      "path": "Samples~/01_MVU"
+    },
+    {
+      "displayName": "02. Outline",
+      "description": "",
+      "path": "Samples~/01_MVU"
+    },
+    {
+      "displayName": "03. DataStorage",
+      "description": "",
+      "path": "Samples~/03_DataStorage"
+    },
+    {
+      "displayName": "04. UnitTree",
+      "description": "",
+      "path": "Samples~/04_UnitTree"
+    },
+    {
+      "displayName": "05. XRInteraction",
+      "description": "",
+      "path": "Samples~/05_XRInteraction"
+    },
+    {
+      "displayName": "06. MeshDeformance",
+      "description": "",
+      "path": "Samples~/06_MeshDeformance"
+    }
+  ]
+}

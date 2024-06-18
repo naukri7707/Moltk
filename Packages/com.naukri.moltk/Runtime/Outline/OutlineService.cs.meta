@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: c3b068c2e15b64d4b82ff75b2c6d0478
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - outlineEffect: {instanceID: 0}
+  - outlineLayers: {fileID: 11400000, guid: 63e128195a14eb948b2867837c6934bb, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
