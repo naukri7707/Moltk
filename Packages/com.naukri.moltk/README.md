@@ -21,7 +21,7 @@ Moltk 是一款簡便的機械操作訓練開發工具包,旨在協助開發者�
 
 ## 快速安裝
 
-要快速安裝 Moltk,請按照以下步驟操作:
+要快速安裝 Moltk，請按照以下步驟操作：
 
 1. 建立一個 Unity 版本 2022.3.11f1 或以上的專案
 2. 安裝 Inspector Maid 和 UnityFx.Outline
