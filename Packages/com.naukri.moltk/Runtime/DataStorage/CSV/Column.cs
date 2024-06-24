@@ -1,41 +1,65 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Naukri.Moltk.DataStorage.Csv
 {
-    public abstract class Column
+    public interface IColumn
     {
-        public Column(string name)
-        {
-            Name = name;
-        }
-
         public string Name { get; }
 
-        public abstract int RowCount { get; }
+        internal int RowCount { get; }
 
-        internal abstract void FillDefaultValueUntil(int index);
+        public object this[int index] { get; set; }
+
+        public object GetValue(int index);
+
+        public void SetValue(int index, string value);
+
+        public IEnumerable<string> GetValues();
+
+        internal void FillDefaultValueUntil(int index);
     }
 
-    public class Column<T> : Column
+    public interface IColumn<T> : IColumn
     {
-        public Column(string name) : base(name)
+        public new T this[int index] { get; set; }
+
+        public new T GetValue(int index);
+
+        public void SetValue(int index, T value);
+
+        public new IEnumerable<T> GetValues();
+    }
+
+    public class Column<T> : IColumn<T>
+    {
+        public Column(string name) : this(name, new T[0])
         {
-            values = new List<T>();
         }
 
-        public Column(string name, params T[] values) : base(name)
+        public Column(string name, params T[] values)
         {
+            Name = name;
             this.values = new List<T>(values);
         }
 
         private readonly List<T> values;
 
-        public override int RowCount => values.Count;
+        public string Name { get; }
+
+        int IColumn.RowCount => values.Count;
 
         public T this[int index]
         {
             get => GetValue(index);
             set => SetValue(index, value);
+        }
+
+        object IColumn.this[int index]
+        {
+            get => GetValue(index);
+            set => SetValue(index, (T)value);
         }
 
         public T GetValue(int index)
@@ -54,7 +78,28 @@ namespace Naukri.Moltk.DataStorage.Csv
 
         public IEnumerable<T> GetValues() => values;
 
-        internal override void FillDefaultValueUntil(int index)
+        object IColumn.GetValue(int index)
+        {
+            return GetValue(index);
+        }
+
+        void IColumn.SetValue(int index, string value)
+        {
+            var parsedValue = Parse<T>.From(value);
+            SetValue(index, parsedValue);
+        }
+
+        IEnumerable<string> IColumn.GetValues()
+        {
+            return GetValues().Select(it => it.ToString());
+        }
+
+        void IColumn.FillDefaultValueUntil(int index)
+        {
+            FillDefaultValueUntil(index);
+        }
+
+        private void FillDefaultValueUntil(int index)
         {
             while (values.Count <= index)
             {

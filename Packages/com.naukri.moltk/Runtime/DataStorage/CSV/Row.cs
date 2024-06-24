@@ -3,15 +3,32 @@ using System.Linq;
 
 namespace Naukri.Moltk.DataStorage.Csv
 {
-    public class Row
+    public interface IRow
     {
-        public Row(int index, Row row)
+        public int Index { get; }
+
+        public T GetValue<T>(string columnName);
+
+        public T GetValue<T>(int columnIndex);
+
+        public T GetValue<T>(IColumn<T> column);
+
+        public void SetValue<T>(string columnName, T value);
+
+        public void SetValue<T>(int columnIndex, T value);
+
+        public void SetValue<T>(IColumn<T> column, T value);
+
+        public Row Next();
+    }
+
+    public class Row : IRow
+    {
+        public Row(int index, Row row) : this(index, row.Columns)
         {
-            this.index = index;
-            columns = row.Columns;
         }
 
-        public Row(int index, params Column[] columns)
+        public Row(int index, params IColumn[] columns)
         {
             this.index = index;
             this.columns = columns;
@@ -19,11 +36,11 @@ namespace Naukri.Moltk.DataStorage.Csv
 
         private readonly int index;
 
-        private readonly Column[] columns;
+        private readonly IColumn[] columns;
 
         public int Index => index;
 
-        private Column[] Columns => columns.ToArray();
+        private IColumn[] Columns => columns.ToArray();
 
         public T GetValue<T>(string columnName)
         {
@@ -33,11 +50,11 @@ namespace Naukri.Moltk.DataStorage.Csv
 
         public T GetValue<T>(int columnIndex)
         {
-            var column = columns[columnIndex] as Column<T>;
+            var column = columns[columnIndex] as IColumn<T>;
             return GetValue(column);
         }
 
-        public T GetValue<T>(Column<T> column)
+        public T GetValue<T>(IColumn<T> column)
         {
             return column.GetValue(index);
         }
@@ -50,11 +67,11 @@ namespace Naukri.Moltk.DataStorage.Csv
 
         public void SetValue<T>(int columnIndex, T value)
         {
-            var column = columns[columnIndex] as Column<T>;
+            var column = columns[columnIndex] as IColumn<T>;
             SetValue(column, value);
         }
 
-        public void SetValue<T>(Column<T> column, T value)
+        public void SetValue<T>(IColumn<T> column, T value)
         {
             column.SetValue(index, value);
         }
@@ -64,14 +81,14 @@ namespace Naukri.Moltk.DataStorage.Csv
             return new Row(index + 1, columns);
         }
 
-        private Column GetColumn(string name)
+        private IColumn GetColumn(string name)
         {
             return Array.Find(columns, it => it.Name == name);
         }
 
-        private Column<T> GetColumn<T>(string name)
+        private IColumn<T> GetColumn<T>(string name)
         {
-            return GetColumn(name) as Column<T>;
+            return GetColumn(name) as IColumn<T>;
         }
     }
 }
