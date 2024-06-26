@@ -5,16 +5,13 @@
         public string Name { get; }
 
         public int Index { get; }
+
+        public string DefaultValue { get; }
     }
 
-    public interface IColumn<T>
+    public class Column : IColumn
     {
-        public T DefaultValue { get; }
-    }
-
-    public class Column<T> : IColumn<T>
-    {
-        public Column(ISheet sheet, string name, int index, T defaultValue = default)
+        public Column(ISheet sheet, string name, int index, string defaultValue = "")
         {
             this.sheet = sheet;
             Name = name;
@@ -28,6 +25,6 @@
 
         public int Index { get; }
 
-        public T DefaultValue { get; }
+        public string DefaultValue { get; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Codice.Client.BaseCommands.BranchExplorer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Naukri.Moltk.DataStorage.Csv2
@@ -41,6 +42,12 @@ namespace Naukri.Moltk.DataStorage.Csv2
         public void DeleteRow(int rowPosition, int howMany = 1);
 
         /// <summary>
+        /// 傳回最後一列包含內容的位置。
+        /// </summary>
+        /// <returns></returns>
+        public int GetLastRow();
+
+        /// <summary>
         /// 傳回指定座標上左上角儲存格的範圍，此範圍包含指定的資料列和欄數。
         /// </summary>
         /// <param name="row"></param>
@@ -67,16 +74,6 @@ namespace Naukri.Moltk.DataStorage.Csv2
         /// <returns></returns>
         public void Clear();
 
-        /// <summary>
-        /// 載入工作表內容
-        /// </summary>
-        public void Load();
-
-        /// <summary>
-        /// 儲存工作表內容
-        /// </summary>
-        public void Save();
-
         Filiter CreateFiliter(IColumn column, string operation, string value);
 
         Filiter CreateFiliter(int columnIndex, string operation, string value);
@@ -84,62 +81,21 @@ namespace Naukri.Moltk.DataStorage.Csv2
         Filiter CreateFiliter(string columnName, string operation, string value);
     }
 
-    public abstract class Sheet : ISheet
+    public partial class MemorySheet : ISheet
     {
-        public abstract IColumn[] Columns { get; }
+        private MemorySheet() { }
 
-        public abstract IRow this[int index] { get; }
-
-        public abstract IRowArray this[params int[] indexes] { get; }
-
-        public abstract IRowArray this[Range range] { get; }
-
-        public abstract IRowArray this[(IColumn column, string operation, string value) filiter] { get; }
-
-        public abstract IRowArray this[(int columnIndex, string operation, string value) filiter] { get; }
-
-        public abstract IRowArray this[(string columnName, string operation, string value) filiter] { get; }
-
-        public abstract void AppendRow(params string[] rowContents);
-
-        public abstract void Clear();
-
-        public abstract Filiter CreateFiliter(IColumn column, string operation, string value);
-
-        public abstract Filiter CreateFiliter(int columnIndex, string operation, string value);
-
-        public abstract Filiter CreateFiliter(string columnName, string operation, string value);
-
-        public abstract void DeleteRow(int rowPosition, int howMany = 1);
-
-        public abstract string[,] GetRangeValues(int row, int column, int numRows = 1, int numColumns = 1);
-
-        public abstract string[,] GetRangeValuesUntil(int startRow, int startColumn, int endRow, int endColumn);
-
-        public abstract void SetRangeValues(string[,] values, int row, int column);
-
-        public abstract void Load();
-
-        public abstract void Save();
-
-        public abstract void SetOrAppendRow((int columnIndex, string operation, string value) filiter, params string[] rowContents);
-
-        public abstract void SetOrAppendRow((string columnName, string operation, string value) filiter, params string[] rowContents);
-
-        public abstract void SetOrAppendRow((IColumn column, string operation, string value) filiter, params string[] rowContents);
-    }
-
-    public class MemorySheet : Sheet
-    {
         private readonly List<string[]> _data = new();
 
-        public override IColumn[] Columns { get; }
+        private IColumn[] _columns;
 
-        public override IRow this[int index] => new MemoryRow(this, index);
+        public IColumn[] Columns => _columns;
 
-        public override IRowArray this[params int[] indexes] => new RowArray(this, indexes.Select(x => this[x]).ToArray());
+        public IRow this[int index] => new MemoryRow(this, index);
 
-        public override IRowArray this[Range range]
+        public IRowArray this[params int[] indexes] => new RowArray(this, indexes.Select(x => this[x]).ToArray());
+
+        public IRowArray this[Range range]
         {
             get
             {
@@ -149,7 +105,7 @@ namespace Naukri.Moltk.DataStorage.Csv2
             }
         }
 
-        public override IRowArray this[(IColumn column, string operation, string value) filiter]
+        public IRowArray this[(IColumn column, string operation, string value) filiter]
         {
             get
             {
@@ -160,7 +116,7 @@ namespace Naukri.Moltk.DataStorage.Csv2
             }
         }
 
-        public override IRowArray this[(int columnIndex, string operation, string value) filiter]
+        public IRowArray this[(int columnIndex, string operation, string value) filiter]
         {
             get
             {
@@ -171,7 +127,7 @@ namespace Naukri.Moltk.DataStorage.Csv2
             }
         }
 
-        public override IRowArray this[(string columnName, string operation, string value) filiter]
+        public IRowArray this[(string columnName, string operation, string value) filiter]
         {
             get
             {
@@ -182,37 +138,42 @@ namespace Naukri.Moltk.DataStorage.Csv2
             }
         }
 
-        public override void AppendRow(params string[] rowContents)
+        public void AppendRow(params string[] rowContents)
+        {
+            if (rowContents.Length > Columns.Length)
+            {
+                throw new ArgumentException("The number of columns in the row is greater than the number of columns in the sheet.");
+            }
+
+            _data.Add(rowContents);
+        }
+
+        public void Clear()
+        {
+            _data.Clear();
+        }
+
+        public Filiter CreateFiliter(IColumn column, string operation, string value)
         {
             throw new NotImplementedException();
         }
 
-        public override void Clear()
+        public Filiter CreateFiliter(int columnIndex, string operation, string value)
         {
             throw new NotImplementedException();
         }
 
-        public override Filiter CreateFiliter(IColumn column, string operation, string value)
+        public Filiter CreateFiliter(string columnName, string operation, string value)
         {
             throw new NotImplementedException();
         }
 
-        public override Filiter CreateFiliter(int columnIndex, string operation, string value)
+        public void DeleteRow(int rowPosition, int howMany = 1)
         {
             throw new NotImplementedException();
         }
 
-        public override Filiter CreateFiliter(string columnName, string operation, string value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void DeleteRow(int rowPosition, int howMany = 1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string[,] GetRangeValues(int row, int column, int numRows = 1, int numColumns = 1)
+        public string[,] GetRangeValues(int row, int column, int numRows = 1, int numColumns = 1)
         {
             MapIndex(ref row);
             MapIndex(ref column);
@@ -230,7 +191,7 @@ namespace Naukri.Moltk.DataStorage.Csv2
             return range;
         }
 
-        public override string[,] GetRangeValuesUntil(int startRow, int startColumn, int endRow, int endColumn)
+        public string[,] GetRangeValuesUntil(int startRow, int startColumn, int endRow, int endColumn)
         {
             MapIndex(ref startRow);
             MapIndex(ref startColumn);
@@ -242,32 +203,66 @@ namespace Naukri.Moltk.DataStorage.Csv2
             return GetRangeValues(startRow, startColumn, numRow, numColumn);
         }
 
-        public override void SetRangeValues(string[,] values, int row, int column)
+        public void SetRangeValues(string[,] values, int row, int column)
         {
             throw new NotImplementedException();
         }
 
-        public override void Load()
+        public void Load(string path)
+        {
+            using StreamReader sr = new StreamReader(path);
+
+            // pass header line
+            string line = sr.ReadLine();
+            if (line == null)
+            {
+                return;
+            }
+
+            // Clean and set data
+            Clear();
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] values = line.Split(',');
+                AppendRow(values);
+            }
+        }
+
+        public void Save(string path)
+        {
+            using StreamWriter sw = new StreamWriter(path);
+
+            // write header
+            string headerLine = string.Join(",", _columns.Select(c => c.Name));
+            sw.WriteLine(headerLine);
+
+            // write each row
+            var rowsArray = this[..]; // effectively get all rows rowArray (this[0..^0])
+
+            foreach (var row in rowsArray.GetRows())
+            {
+                var values = row[..];
+                string rowLine = string.Join(",", values);
+                sw.WriteLine(rowLine);
+            }
+        }
+
+        public void SetOrAppendRow((int columnIndex, string operation, string value) filiter, params string[] rowContents)
         {
             throw new NotImplementedException();
         }
 
-        public override void Save()
+        public void SetOrAppendRow((string columnName, string operation, string value) filiter, params string[] rowContents)
         {
             throw new NotImplementedException();
         }
 
-        public override void SetOrAppendRow((int columnIndex, string operation, string value) filiter, params string[] rowContents)
+        public void SetOrAppendRow((IColumn column, string operation, string value) filiter, params string[] rowContents)
         {
             throw new NotImplementedException();
         }
 
-        public override void SetOrAppendRow((string columnName, string operation, string value) filiter, params string[] rowContents)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void SetOrAppendRow((IColumn column, string operation, string value) filiter, params string[] rowContents)
+        public int GetLastRow()
         {
             throw new NotImplementedException();
         }
@@ -303,6 +298,33 @@ namespace Naukri.Moltk.DataStorage.Csv2
             }
 
             return new RowArray(this, collection.ToArray());
+        }
+    }
+
+    partial class MemorySheet
+    {
+        public static Builder CreateBuilder() => new();
+
+        public class Builder
+        {
+            internal Builder() { }
+
+            private readonly List<IColumn> _columns = new();
+
+            private readonly MemorySheet _sheet = new();
+
+            public Builder WithColumn(string name, string defaultValue = "")
+            {
+                var column = new Column(_sheet, name, _columns.Count, defaultValue);
+                _columns.Add(column);
+                return this;
+            }
+
+            public MemorySheet Build()
+            {
+                _sheet._columns = _columns.ToArray();
+                return _sheet;
+            }
         }
     }
 }

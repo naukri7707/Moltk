@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Naukri.Moltk.DataStorage.Csv2
 {
-    public interface IRowArray
+    public interface IRowArray : IEnumerable<IRow>
     {
         public string[,] this[params string[] columnNames] { get; }
 
@@ -18,6 +20,44 @@ namespace Naukri.Moltk.DataStorage.Csv2
         public string[,] this[params int[] columnIndexes] { get; }
 
         public string[] this[int columnIndex] { get; }
+
+        IRow[] GetRows();
+
+        public class Enumerator : IEnumerator<IRow>
+        {
+            public Enumerator(IRowArray target)
+            {
+                rows = target.GetRows();
+            }
+
+            private int index = -1;
+
+            private IRow[] rows;
+
+            public IRow Current => rows[index];
+
+            object IEnumerator.Current { get; }
+
+            public bool MoveNext()
+            {
+                index++;
+                if (index >= rows.Length)
+                {
+                    return false;
+                }
+                return true;
+            }
+
+            public void Reset()
+            {
+                index = -1;
+            }
+
+            public void Dispose()
+            {
+                rows = null;
+            }
+        }
     }
 
     public class RowArray : IRowArray
@@ -40,10 +80,25 @@ namespace Naukri.Moltk.DataStorage.Csv2
 
         public string[] this[IColumn column] => this[column.Index];
 
-        public string[,] this[Range columnRange] => rows.Select(it => it[columnRange]).To2DArray();
+        public string[,] this[Range columnRange] => GetRows().Select(it => it[columnRange]).To2DArray();
 
-        public string[,] this[params int[] columnIndexes] => rows.Select(it => it[columnIndexes]).To2DArray();
+        public string[,] this[params int[] columnIndexes] => GetRows().Select(it => it[columnIndexes]).To2DArray();
 
-        public string[] this[int columnIndex] => rows.Select(it => it[columnIndex]).ToArray();
+        public string[] this[int columnIndex] => GetRows().Select(it => it[columnIndex]).ToArray();
+
+        public IRow[] GetRows()
+        {
+            return rows.ToArray();
+        }
+
+        public IEnumerator<IRow> GetEnumerator()
+        {
+            return new IRowArray.Enumerator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }
