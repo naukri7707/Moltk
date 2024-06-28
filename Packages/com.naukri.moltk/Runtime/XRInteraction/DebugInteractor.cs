@@ -3,6 +3,8 @@ using Naukri.InspectorMaid.Layout;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 namespace Naukri.Moltk.XRInteraction
 {
@@ -24,7 +26,7 @@ namespace Naukri.Moltk.XRInteraction
         protected virtual void Awake()
         {
             interactor = GetComponent<XRDirectInteractor>();
-            interactor.selectActionTrigger = XRBaseControllerInteractor.InputTriggerType.Toggle;
+            interactor.selectActionTrigger = XRBaseInputInteractor.InputTriggerType.Toggle;
         }
 
         protected virtual void Start()

@@ -3,6 +3,7 @@ using Naukri.InspectorMaid.Layout;
 using Naukri.Moltk.Core;
 using UnityEngine.UIElements;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 namespace Naukri.Moltk.XRInteraction
 {
