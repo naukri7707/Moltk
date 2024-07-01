@@ -1,7 +1,6 @@
-﻿using Naukri.InspectorMaid;
-using Naukri.Moltk.MVU;
+﻿using Naukri.Moltk.MVU;
 
-public record MyData(int Value) : State
+public record MyData(int Value)
 {
     public MyData() : this(0)
     {

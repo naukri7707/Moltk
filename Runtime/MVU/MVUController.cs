@@ -1,24 +1,24 @@
-﻿using System;
-using UnityEngine;
-using System.Threading.Tasks;
-
-namespace Naukri.Moltk.MVU
+﻿namespace Naukri.Moltk.MVU
 {
     public abstract class MVUController<TState> : ProviderBehaviour<TState>
-        where TState : State, new()
+        where TState : class, new()
     {
         public ProviderBehaviour[] subscribes;
 
-        protected override void OnEnable()
+        protected override void Awake()
         {
             Subscribe(this);
             Subscribe(subscribes);
+        }
+
+        protected override void OnEnable()
+        {
             Refresh();
         }
 
-        protected override void OnDisable()
+        protected override void OnDestroy()
         {
-            Unsubscribe();
+            UnsubscribeAll();
         }
     }
 }
