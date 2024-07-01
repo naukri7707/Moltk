@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.2.3] - 2024-07-01
+
+### 修正
+
+- 將 `XR Keyboard.prefab` 復位 (transform reset)
+- 修正 `XRKeyboardInput.originalText` 被序列化錯誤
+
+## [0.2.2] - 2024-07-01
+
+### 新增
+
+- 新增 `XR Keyboard` Sample 場景
+
+## [0.2.1] - 2024-07-01
+
+### 修正
+
+- 修正 `XR Keyboard` 參考遺失錯誤
+
 ## [0.2.0] - 2024-07-01
 
 ### 新增
