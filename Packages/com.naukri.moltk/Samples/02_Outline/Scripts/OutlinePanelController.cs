@@ -8,7 +8,7 @@ public record OutlinePanelState(
     bool IsHighlighted,
     bool IsHovered,
     bool IsSelected
-    ) : State
+    )
 {
     public OutlinePanelState() : this(
         IsHighlighted: false,

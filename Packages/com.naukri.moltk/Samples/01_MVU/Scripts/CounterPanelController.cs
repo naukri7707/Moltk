@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 // 如果你不了解 record，可以參考官方文檔 https://learn.microsoft.com/zh-tw/dotnet/csharp/fundamentals/types/records
 public record CounterPanelState(
     int Counter
-    ) : State // 記得要繼承 MVUState
+    )
 {
     // 我們需要建立公用 (public) 無參數的建構子來讓 MVUController 可以初始化 State
     public CounterPanelState() : this(

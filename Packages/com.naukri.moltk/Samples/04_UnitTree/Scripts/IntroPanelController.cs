@@ -1,12 +1,9 @@
 ﻿using Naukri.Moltk.MVU;
 using Naukri.Moltk.UnitTree;
 using Naukri.Moltk.UnitTree.Providers;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.UIElements;
 
-public record IntroPanelState() : State
+public record IntroPanelState()
 {
 }
 

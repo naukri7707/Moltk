@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Naukri.Moltk.UnitTree.Providers
 {
-    public record PageNumber(int Current, int Total) : State
+    public record PageNumber(int Current, int Total)
     {
         public PageNumber() : this(
             Current: 0,

@@ -11,20 +11,27 @@ namespace Naukri.Moltk.MVU
         internal void Unsubscribe();
 
         internal void Build(IProvider notifier);
+
+        internal void HandleEvent(IProvider provider, IProviderEvent evt);
     }
 
     public abstract class ConsumerBehaviour : MoltkBehaviour, IConsumer
     {
-        private readonly List<IDisposable> unsubscribers = new();
+        private readonly List<Unsubscriber> unsubscribers = new();
 
         void IConsumer.Unsubscribe()
         {
-            Unsubscribe();
+            UnsubscribeAll();
         }
 
         void IConsumer.Build(IProvider provider)
         {
             Build(provider);
+        }
+
+        void IConsumer.HandleEvent(IProvider provider, IProviderEvent evt)
+        {
+            HandleEvent(provider, evt);
         }
 
         void IConsumer.Subscribe(params IProvider[] providers)
@@ -40,19 +47,35 @@ namespace Naukri.Moltk.MVU
                 if (unsubscriber != null)
                 {
                     unsubscribers.Add(unsubscriber);
+                    Build(provider);
                 }
             }
         }
 
-        protected void Unsubscribe()
+        protected void UnsubscribeAll()
         {
             foreach (var unsubscriber in unsubscribers)
             {
                 unsubscriber.Dispose();
             }
+            unsubscribers.Clear();
+        }
+
+        protected void Unsubscribe(params IProvider[] providers)
+        {
+            foreach (var provider in providers)
+            {
+                var targetUnsubscribers = unsubscribers.FindAll(it => it.Provider == provider);
+                foreach (var unsubscriber in targetUnsubscribers)
+                {
+                    unsubscribers.Remove(unsubscriber);
+                }
+            }
         }
 
         protected abstract void Build(IProvider provider);
+
+        protected virtual void HandleEvent(IProvider provider, IProviderEvent evt) { }
     }
 
     internal class Unsubscriber : IDisposable
@@ -67,9 +90,11 @@ namespace Naukri.Moltk.MVU
 
         private readonly IConsumer consumer;
 
+        public IProvider Provider => provider;
+
         public void Dispose()
         {
-            provider.RemoveConsumer(consumer);
+            Provider.RemoveConsumer(consumer);
         }
     }
 }
