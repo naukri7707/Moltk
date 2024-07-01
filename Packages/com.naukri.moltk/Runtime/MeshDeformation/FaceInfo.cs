@@ -4,15 +4,15 @@ namespace Naukri.Moltk.MeshDeformation
 {
     public readonly struct FaceInfo
     {
-        public readonly Vector3 origin;
-
-        public readonly Vector3 normal;
-
         public FaceInfo(Vector3 origin, Vector3 normal)
         {
             this.origin = origin;
             this.normal = normal;
         }
+
+        public readonly Vector3 origin;
+
+        public readonly Vector3 normal;
 
         public static FaceInfo GetFaceInfo(BoxCollider boxCollider, Direction style)
         {
