@@ -9,7 +9,10 @@ namespace Naukri.Moltk.XRKeyboard
 {
     public abstract class XRKeyboardButton : ConsumerBehaviour
     {
+        protected XRKeyboardController controller;
+
         [
+                    SerializeField,
             GroupScope("Dispaly"),
             HelpBox("The character shown if dispalyIcon is null, otherwise the icon will be shown.", UnityEngine.UIElements.HelpBoxMessageType.Info),
             Target,
@@ -20,18 +23,19 @@ namespace Naukri.Moltk.XRKeyboard
             ),
             Button("Update View", nameof(UpdateView))
         ]
-        public string displayCharacter;
+        protected string displayCharacter;
 
-        [Template]
-        public string shiftDisplayCharacter;
+        [SerializeField, Template]
+        protected string shiftDisplayCharacter;
 
-        [Template]
-        public Sprite displayIcon;
+        [SerializeField, Template]
+        protected Sprite displayIcon;
 
-        [Template]
-        public Sprite shiftDisplayIcon;
+        [SerializeField, Template]
+        protected Sprite shiftDisplayIcon;
 
         [
+            SerializeField,
             GroupScope("References"),
             Target,
             Slot(
@@ -40,18 +44,16 @@ namespace Naukri.Moltk.XRKeyboard
             nameof(highlightImage)
             )
         ]
-        public Button button;
+        protected Button button;
 
-        [Template]
-        public TMP_Text characterText;
+        [SerializeField, Template]
+        protected TMP_Text characterText;
 
-        [Template]
-        public Image iconImage;
+        [SerializeField, Template]
+        protected Image iconImage;
 
-        [Template]
-        public Image highlightImage;
-
-        protected XRKeyboardController controller;
+        [SerializeField, Template]
+        protected Image highlightImage;
 
         public void Highlight(bool highlight)
         {

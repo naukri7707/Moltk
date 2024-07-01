@@ -1,6 +1,7 @@
 ﻿using Naukri.InspectorMaid;
 using Naukri.InspectorMaid.Layout;
 using Naukri.Moltk.MVU;
+using UnityEngine;
 
 namespace Naukri.Moltk.XRKeyboard
 {
@@ -11,13 +12,14 @@ namespace Naukri.Moltk.XRKeyboard
 ]
     public class XRKeyboardActionButton : XRKeyboardButton
     {
-        public Action action;
+        [SerializeField]
+        protected Action action;
 
-        [ShowIf(nameof(action), Action.SendKey)]
-        public string key;
+        [SerializeField, ShowIf(nameof(action), Action.SendKey)]
+        protected string key;
 
-        [ShowIf(nameof(action), Action.SendKey)]
-        public string shiftKey;
+        [SerializeField, ShowIf(nameof(action), Action.SendKey)]
+        protected string shiftKey;
 
         protected override void Build(IProvider provider)
         {
