@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Naukri.Moltk.MVU
@@ -10,13 +11,14 @@ namespace Naukri.Moltk.MVU
 
         internal void NotifyConsumer()
         {
-            foreach (var consumer in Consumers)
+            var consumers = Consumers.ToArray();
+            foreach (var consumer in consumers)
             {
                 consumer.Build(this);
             }
         }
 
-        internal IDisposable AddConsumer(IConsumer consumer)
+        internal Unsubscriber AddConsumer(IConsumer consumer)
         {
             if (Consumers.Add(consumer))
             {
@@ -30,13 +32,22 @@ namespace Naukri.Moltk.MVU
         {
             return Consumers.Remove(consumer);
         }
+
+        internal void SendEvent(IProviderEvent e)
+        {
+            var consumers = Consumers.ToArray();
+            foreach (var consumer in consumers)
+            {
+                consumer.HandleEvent(this, e);
+            }
+        }
     }
 
-    internal interface IProvider<TState> : IProvider where TState : State, new()
+    internal interface IProvider<TState> : IProvider where TState : class, new()
     {
         public TState State { get; }
 
-        public Task SetStateAsync(Func<Task<TState>> stateUpdater);
+        internal Task SetStateAsync(Func<Task<TState>> stateUpdater);
     }
 
     public abstract class ProviderBehaviour : ConsumerBehaviour, IProvider
@@ -47,10 +58,15 @@ namespace Naukri.Moltk.MVU
         {
             ((IProvider)this).NotifyConsumer();
         }
+
+        protected void SendEvent(IProviderEvent e)
+        {
+            ((IProvider)this).SendEvent(e);
+        }
     }
 
     public abstract class ProviderBehaviour<TState> : ProviderBehaviour, IProvider<TState>
-         where TState : State, new()
+         where TState : class, new()
     {
         private TState _state = new();
 

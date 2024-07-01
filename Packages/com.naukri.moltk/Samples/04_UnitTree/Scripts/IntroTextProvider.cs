@@ -4,7 +4,7 @@ using UnityEngine;
 public record IntroText(
     string Title,
     string Content
-       ) : State
+       )
 {
     public IntroText() : this(
         Title: "",
