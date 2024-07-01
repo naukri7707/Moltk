@@ -4,20 +4,6 @@ namespace Naukri.Moltk.MeshDeformation
 {
     public class VertexModifierArgs
     {
-        public readonly MeshDeformer deformer;
-
-        public readonly DeformableObject deformable;
-
-        public readonly int vertexIndex;
-
-        public readonly Vector3 oldPosition;
-
-        public readonly Vector3 newPosition;
-
-        public readonly Vector3 oldWorldPosition;
-
-        public readonly Vector3 newWorldPosition;
-
         public VertexModifierArgs(
             MeshDeformer deformer, DeformableObject deformable, int vertexIndex,
             Vector3 oldPosition, Vector3 newPosition,
@@ -32,5 +18,19 @@ namespace Naukri.Moltk.MeshDeformation
             this.oldWorldPosition = oldWorldPosition;
             this.newWorldPosition = newWorldPosition;
         }
+
+        public readonly MeshDeformer deformer;
+
+        public readonly DeformableObject deformable;
+
+        public readonly int vertexIndex;
+
+        public readonly Vector3 oldPosition;
+
+        public readonly Vector3 newPosition;
+
+        public readonly Vector3 oldWorldPosition;
+
+        public readonly Vector3 newWorldPosition;
     }
 }
