@@ -12,7 +12,6 @@ namespace Naukri.Moltk.XRKeyboard
         [SerializeField]
         protected bool updateImmediately = true;
 
-        [SerializeField]
         protected string originalText;
 
         public void TrackKeyboard()
