@@ -6,14 +6,13 @@ namespace Naukri.Moltk.MeshDeformation
     {
         public static float modifyDistanceThreshold = 0.001F;
 
-        protected virtual void Awake()
-        {
-
-        }
-
         public void Deform(DeformableObject deformable)
         {
             OnDeform(deformable);
+        }
+
+        protected virtual void Awake()
+        {
         }
 
         protected abstract void OnDeform(DeformableObject deformable);

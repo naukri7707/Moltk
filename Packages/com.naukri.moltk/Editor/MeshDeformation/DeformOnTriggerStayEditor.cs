@@ -7,10 +7,6 @@ namespace Naukri.Moltk.Editor.MeshDeformation
     {
         private DeformOnTriggerStay deformOnTriggerStay;
 
-        private void OnEnable()
-        {
-        }
-
         public override void OnInspectorGUI()
         {
             var monoScriptProperty = serializedObject.FindProperty("m_Script");
@@ -32,6 +28,10 @@ namespace Naukri.Moltk.Editor.MeshDeformation
             }
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private void OnEnable()
+        {
         }
     }
 }

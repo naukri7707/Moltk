@@ -2,23 +2,25 @@
 {
     public abstract class ShaderPassLayerCondition : DeformableObjectModifier
     {
-        public class Args
-        {
-            public readonly Triangle triangle;
-            public readonly Triangle originalTriangle;
-
-            public Args(Triangle triangle, Triangle originalTriangle)
-            {
-                this.triangle = triangle;
-                this.originalTriangle = originalTriangle;
-            }
-        }
         internal bool Evaluation(Args args)
         {
             return OnEvaluation(args);
         }
 
         protected abstract bool OnEvaluation(Args args);
+
+        public class Args
+        {
+            public Args(Triangle triangle, Triangle originalTriangle)
+            {
+                this.triangle = triangle;
+                this.originalTriangle = originalTriangle;
+            }
+
+            public readonly Triangle triangle;
+
+            public readonly Triangle originalTriangle;
+        }
     }
 
     public abstract class ShaderPassLayerCondition<TParameters> : ShaderPassLayerCondition, IWithParameter<TParameters>
