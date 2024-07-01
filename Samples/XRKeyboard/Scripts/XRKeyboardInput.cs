@@ -1,16 +1,19 @@
 ﻿using Naukri.Moltk.MVU;
-
 using TMPro;
+using UnityEngine;
 
 namespace Naukri.Moltk.XRKeyboard
 {
     public class XRKeyboardInput : XRKeyboardBinding
     {
-        public TMP_InputField inputField;
+        [SerializeField]
+        protected TMP_InputField inputField;
 
-        public bool updateImmediately = true;
+        [SerializeField]
+        protected bool updateImmediately = true;
 
-        private string originalText;
+        [SerializeField]
+        protected string originalText;
 
         public void TrackKeyboard()
         {
