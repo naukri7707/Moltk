@@ -6,10 +6,6 @@ namespace Naukri.Moltk.MeshDeformation
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public sealed class DeformableObject : MonoBehaviour
     {
-        public MeshFilter MeshFilter { get; private set; }
-
-        public MeshRenderer MeshRenderer { get; private set; }
-
         public DeformableParameters parameters;
 
         public VertexModifier[] vertexModifiers;
@@ -24,41 +20,11 @@ namespace Naukri.Moltk.MeshDeformation
 
         private Vector3[] originalVertices;
 
+        public MeshFilter MeshFilter { get; private set; }
+
+        public MeshRenderer MeshRenderer { get; private set; }
+
         public Vector3[] OriginalVertices => originalVertices;
-
-        // Start is called before the first frame update
-        private void Awake()
-        {
-            MeshFilter = GetComponent<MeshFilter>();
-            MeshRenderer = GetComponent<MeshRenderer>();
-
-            // 使用克隆體進行計算，避免多個 DeformableObject 同時使用一個 VertexModifier 的情況
-            for (var i = 0; i < vertexModifiers.Length; i++)
-            {
-                vertexModifiers[i] = Instantiate(vertexModifiers[i]);
-            }
-            // 使用克隆體進行計算，避免多個 DeformableObject 同時使用一個 ShaderPassLayerCondition 的情況
-            for (var i = 0; i < shaderPassLayers.Length; i++)
-            {
-                shaderPassLayers[i].condition = Instantiate(shaderPassLayers[i].condition);
-            }
-        }
-
-        private void Start()
-        {
-            // 初始化 VertexModifier
-            foreach (var vertexModifier in vertexModifiers)
-            {
-                vertexModifier.InitialImpl(this);
-            }
-            originalVertices = MeshFilter.mesh.vertices;
-
-            if (changeShaderPassDynamicly)
-            {
-                MeshRenderer.materials = materials;
-                MeshFilter.mesh.subMeshCount = materials.Length;
-            }
-        }
 
         public Vector3 ModifyVertex(VertexModifierArgs args)
         {
@@ -148,6 +114,39 @@ namespace Naukri.Moltk.MeshDeformation
                 changedVertex.Clear();
             }
         }
-    }
 
+        // Start is called before the first frame update
+        private void Awake()
+        {
+            MeshFilter = GetComponent<MeshFilter>();
+            MeshRenderer = GetComponent<MeshRenderer>();
+
+            // 使用克隆體進行計算，避免多個 DeformableObject 同時使用一個 VertexModifier 的情況
+            for (var i = 0; i < vertexModifiers.Length; i++)
+            {
+                vertexModifiers[i] = Instantiate(vertexModifiers[i]);
+            }
+            // 使用克隆體進行計算，避免多個 DeformableObject 同時使用一個 ShaderPassLayerCondition 的情況
+            for (var i = 0; i < shaderPassLayers.Length; i++)
+            {
+                shaderPassLayers[i].condition = Instantiate(shaderPassLayers[i].condition);
+            }
+        }
+
+        private void Start()
+        {
+            // 初始化 VertexModifier
+            foreach (var vertexModifier in vertexModifiers)
+            {
+                vertexModifier.InitialImpl(this);
+            }
+            originalVertices = MeshFilter.mesh.vertices;
+
+            if (changeShaderPassDynamicly)
+            {
+                MeshRenderer.materials = materials;
+                MeshFilter.mesh.subMeshCount = materials.Length;
+            }
+        }
+    }
 }
