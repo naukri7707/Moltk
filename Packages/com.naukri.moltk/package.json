@@ -1,6 +1,6 @@
 {
   "name": "com.naukri.moltk",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Naukri",
   "displayName": "Moltk",
   "description": "A simple toolkit for vr machine operation training.",
@@ -23,14 +23,14 @@
       "path": "Samples~/XRKeyboard"
     },
     {
-      "displayName": "01. MVU",
+      "displayName": "01_Provider",
       "description": "",
-      "path": "Samples~/01_MVU"
+      "path": "Samples~/01_Provider"
     },
     {
       "displayName": "02. Outline",
       "description": "",
-      "path": "Samples~/01_MVU"
+      "path": "Samples~/02_Outline"
     },
     {
       "displayName": "03. DataStorage",
