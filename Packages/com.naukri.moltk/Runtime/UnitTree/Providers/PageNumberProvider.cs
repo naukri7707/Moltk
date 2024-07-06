@@ -1,5 +1,5 @@
 ﻿using Naukri.InspectorMaid;
-using Naukri.Moltk.MVU;
+using Naukri.Moltk.Fusion;
 using Naukri.Moltk.UnitTree.Events;
 using Naukri.Moltk.UnitTree.Utility;
 using System;
@@ -8,42 +8,31 @@ using UnityEngine;
 
 namespace Naukri.Moltk.UnitTree.Providers
 {
-    public record PageNumber(int Current, int Total)
+    public record PageNumber(int Current = 0, int Total = 0)
     {
-        public PageNumber() : this(
-            Current: 0,
-            Total: 0
-            )
-        {
-        }
-
         public string PageNumberText => $"{(Current + 1).ToString().PadLeft(Total.ToString().Length, '0')} / {Total}";
     }
 
-    public class PageNumberProvider : ProviderBehaviour<PageNumber>
+    public class PageNumberProvider : Provider<PageNumber>
     {
-        [
-           Slot(nameof(PageNumberText)),
-           Target, ReadOnly
-        ]
+        [ReadOnly]
         public Transform[] pages;
 
-        [Template]
         public string PageNumberText => State.PageNumberText;
 
-        protected override void Build(IProvider provider)
+        protected override PageNumber Build(PageNumber state)
         {
-            // Do nothing
+            return state ?? new PageNumber();
         }
 
         protected override void Start()
         {
             base.Start();
             pages = GetAllPage();
-            State = State with
+            SetState(s => s with
             {
                 Total = pages.Length,
-            };
+            });
         }
 
         protected override void OnEnable()
@@ -75,10 +64,10 @@ namespace Naukri.Moltk.UnitTree.Providers
             if (unitTreeEvent is NodeChangedEvent nodeChangedEvent)
             {
                 var idx = GetNodeIndex(nodeChangedEvent.to.transform);
-                State = State with
+                SetState(s => s with
                 {
                     Current = idx,
-                };
+                });
             }
         }
     }

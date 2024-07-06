@@ -49,15 +49,15 @@ namespace Naukri.Moltk.UnitTree
             switch (eventType)
             {
                 case EventType.SelfOnly:
-                    SendMessage(nameof(HandleEvent), new T(), SendMessageOptions.DontRequireReceiver);
+                    SendMessage(nameof(HandleTreeEvent), new T(), SendMessageOptions.DontRequireReceiver);
                     break;
 
                 case EventType.Upwards:
-                    SendMessageUpwards(nameof(HandleEvent), new T(), SendMessageOptions.DontRequireReceiver);
+                    SendMessageUpwards(nameof(HandleTreeEvent), new T(), SendMessageOptions.DontRequireReceiver);
                     break;
 
                 case EventType.Broadcast:
-                    BroadcastMessage(nameof(HandleEvent), new T(), SendMessageOptions.DontRequireReceiver);
+                    BroadcastMessage(nameof(HandleTreeEvent), new T(), SendMessageOptions.DontRequireReceiver);
                     break;
             }
         }
@@ -67,15 +67,15 @@ namespace Naukri.Moltk.UnitTree
             switch (eventType)
             {
                 case EventType.SelfOnly:
-                    SendMessage(nameof(HandleEvent), evt, SendMessageOptions.DontRequireReceiver);
+                    SendMessage(nameof(HandleTreeEvent), evt, SendMessageOptions.DontRequireReceiver);
                     break;
 
                 case EventType.Upwards:
-                    SendMessageUpwards(nameof(HandleEvent), evt, SendMessageOptions.DontRequireReceiver);
+                    SendMessageUpwards(nameof(HandleTreeEvent), evt, SendMessageOptions.DontRequireReceiver);
                     break;
 
                 case EventType.Broadcast:
-                    BroadcastMessage(nameof(HandleEvent), evt, SendMessageOptions.DontRequireReceiver);
+                    BroadcastMessage(nameof(HandleTreeEvent), evt, SendMessageOptions.DontRequireReceiver);
                     break;
             }
         }
@@ -90,7 +90,7 @@ namespace Naukri.Moltk.UnitTree
             OnExit();
         }
 
-        protected virtual void HandleEvent(UnitTreeEvent evt)
+        protected virtual void HandleTreeEvent(UnitTreeEvent evt)
         {
         }
 

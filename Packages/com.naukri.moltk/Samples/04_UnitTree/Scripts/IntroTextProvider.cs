@@ -1,29 +1,18 @@
-﻿using Naukri.Moltk.MVU;
+﻿using Naukri.Moltk.Fusion;
 using UnityEngine;
 
 public record IntroText(
-    string Title,
-    string Content
-       )
+    string Title = "",
+    string Content = ""
+    )
 {
-    public IntroText() : this(
-        Title: "",
-        Content: ""
-        )
-    {
-    }
 }
 
-public partial class IntroTextProvider : ProviderBehaviour<IntroText>
+public partial class IntroTextProvider : Provider<IntroText>
 {
-    public void SetText(IntroText text)
+    protected override IntroText Build(IntroText state)
     {
-        State = text;
-    }
-
-    protected override void Build(IProvider provider)
-    {
-        // 沒有訂閱任何 Provider，所以這裡不需要做任何事情。
+        return state ?? new IntroText();
     }
 }
 

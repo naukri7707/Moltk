@@ -90,9 +90,9 @@ namespace Naukri.Moltk.UnitTree
             MoveToImpl(target);
         }
 
-        protected override void HandleEvent(UnitTreeEvent evt)
+        protected override void HandleTreeEvent(UnitTreeEvent evt)
         {
-            base.HandleEvent(evt);
+            base.HandleTreeEvent(evt);
             eventHandler.Invoke(evt);
         }
 
@@ -123,7 +123,7 @@ namespace Naukri.Moltk.UnitTree
                 currentNode != null ? currentNode.gameObject : null,
                 target != null ? target.gameObject : null
                 );
-            BroadcastMessage(nameof(HandleEvent), nodeChangingEvent, SendMessageOptions.DontRequireReceiver);
+            BroadcastMessage(nameof(HandleTreeEvent), nodeChangingEvent, SendMessageOptions.DontRequireReceiver);
 
             // Deactivate nodes from current to LCA and activate nodes from LCA to target
             ExitNodesToLCA(currentNode, lca);
@@ -137,7 +137,7 @@ namespace Naukri.Moltk.UnitTree
                 currentNode != null ? currentNode.gameObject : null,
                 target != null ? target.gameObject : null
                 );
-            BroadcastMessage(nameof(HandleEvent), nodeChangedEvent, SendMessageOptions.DontRequireReceiver);
+            BroadcastMessage(nameof(HandleTreeEvent), nodeChangedEvent, SendMessageOptions.DontRequireReceiver);
         }
 
         private void ExitNodesToLCA(Transform node, Transform lca)
