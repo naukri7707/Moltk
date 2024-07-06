@@ -17,9 +17,9 @@ namespace Naukri.Moltk.Fusion
         internal T Build(T state);
     }
 
-    public abstract class Provider : Consumer
+    public abstract partial class Provider : Consumer
     {
-        public virtual ProviderKey Key => ProviderKey.Empty;
+        public virtual ProviderKey Key => new();
 
         public void SendEvent(ProviderEvent evt)
         {
@@ -106,5 +106,18 @@ namespace Naukri.Moltk.Fusion
         }
 
         protected abstract TState Build(TState state);
+    }
+
+    partial class Provider
+    {
+        public static bool KeepAlive(Provider provider)
+        {
+            if (!ProviderScope.TryLocate(out var scope))
+            {
+                throw new InvalidOperationException($"Can not locate {nameof(ProviderScope)}.");
+            }
+            DontDestroyOnLoad(provider);
+            return scope.Register(provider);
+        }
     }
 }
