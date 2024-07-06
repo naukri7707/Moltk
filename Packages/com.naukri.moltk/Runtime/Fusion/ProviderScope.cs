@@ -70,7 +70,7 @@ namespace Naukri.Moltk.Fusion
 
         private void Resolve()
         {
-            var providers = FindObjectsOfType<Provider>();
+            var providers = FindObjectsOfType<Provider>(true);
             foreach (var provider in providers)
             {
                 Register(provider);
