@@ -221,6 +221,6 @@ public class MyConsumer : Consumer
 
 1. 使用 `record` 來定義不可變的狀態。
 2. 只在 `Provider` 中使用 `SetState` 方法來更新狀態。如果要從外部更新 `Provider` 狀態，應該在 `Provider` 中建立一個對應的方法透過該方法更新。
-3. 在 `Consumer` 中使用 `Watch` 或 `Listen` 來訂閱 `Provider`。
+3. 只在 `OnIn` 中使用 `Watch` 或 `Listen` 來訂閱 `Provider`。
 4. 在ViewController中將UI邏輯與狀態管理分離。
 5. 使用Provider Scope來管理不同場景或層次結構中的Provider。
