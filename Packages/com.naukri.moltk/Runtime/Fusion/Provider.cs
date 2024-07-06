@@ -14,13 +14,30 @@ namespace Naukri.Moltk.Fusion
         internal T Build(T state);
     }
 
+    public abstract partial class SingletonProvider<TState> : Provider<TState>
+        where TState : IEquatable<TState>
+    {
+        protected override ProviderKey BuildKey()
+        {
+            return base.BuildKey();
+        }
+    }
+
     public abstract partial class Provider : Consumer
     {
-        public virtual ProviderKey Key => new();
+        private ProviderKey _key;
+
+        public ProviderKey Key => _key ??= BuildKey();
 
         public void SendEvent(ProviderEvent evt)
         {
             node.SendEvent(this, evt);
+        }
+
+        protected virtual ProviderKey BuildKey()
+        {
+            var type = GetType();
+            return new ProviderKey<Type>(type);
         }
 
         protected override void OnDestroy()
