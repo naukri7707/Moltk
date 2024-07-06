@@ -11,12 +11,6 @@ public record CounterData(int Value = 0)
 // 定義 CounterProvider，它使用 CounterData 作為狀態
 public class CounterProvider : Provider<CounterData>
 {
-    // 如果你有多個相同類型的 Provider
-    // 你可以透過覆寫 Key 來定義 Provider 的識別項
-    // 之後便可透過識別項定向取得目標 Provider
-    // 當然如果只有一個 Provider 或是你不在意要取得哪個具體實例，也可以無視這一項
-    public override ProviderKey Key => base.Key;
-
     [
         HelpBox("Play the scene, and then press Invoke to show how to work with provider and consumer.", UnityEngine.UIElements.HelpBoxMessageType.Info),
         Target
