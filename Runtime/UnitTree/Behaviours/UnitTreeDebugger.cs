@@ -87,7 +87,7 @@ namespace Naukri.Moltk.UnitTree.Behaviours
             unitTreeController.MoveTo(target);
         }
 
-        protected override void HandleEvent(UnitTreeEvent evt)
+        protected override void HandleTreeEvent(UnitTreeEvent evt)
         {
             if (pingCurrentNode)
             {
