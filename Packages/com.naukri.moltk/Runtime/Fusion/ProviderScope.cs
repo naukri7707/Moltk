@@ -1,53 +1,36 @@
 ﻿using Naukri.Moltk.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Naukri.Moltk.Fusion
 {
     [AddComponentMenu("")] // Hide ProviderScope in AddComponent's Menu
     internal sealed partial class ProviderScope : MonoBehaviour
     {
-        private readonly HashSet<Scene> loadedScenes = new();
-
-        private readonly Dictionary<
-                ProviderKey,
-                HashSet<Provider>
-                > cachedProviderMap = new();
-
-        private IEnumerable<Provider> CachedProviders => cachedProviderMap.Values.SelectMany(set => set);
+        private readonly Dictionary<ProviderKey, Provider> cachedProviders = new();
 
         public T GetProvider<T>() where T : Provider
         {
-            return CachedProviders.OfType<T>().FirstOrDefault();
+            var key = new ProviderKey<Type>(typeof(T));
+
+            return GetProvider<T>(key);
         }
 
         public T GetProvider<T>(ProviderKey key)
           where T : Provider
         {
-            return cachedProviderMap[key].OfType<T>().FirstOrDefault();
-        }
-
-        public T[] GetProviders<T>() where T : Provider
-        {
-            return CachedProviders.OfType<T>().ToArray();
-        }
-
-        public T[] GetProviders<T>(ProviderKey key) where T : Provider
-        {
-            return cachedProviderMap[key].OfType<T>().ToArray();
-        }
-
-        public void OnComponentCreated()
-        {
-            var sceneCount = SceneManager.sceneCount;
-
-            for (int i = 0; i < sceneCount; i++)
+            if (!cachedProviders.ContainsKey(key))
             {
-                var scene = SceneManager.GetSceneAt(i);
-                EnsureSceneProviderCached(scene);
+                // 如果找不到 Provider 就再遍例一次場景中的 Provider 並嘗試註冊
+                Resolve();
             }
+            var akey = cachedProviders.Keys.FirstOrDefault();
+
+            bool a = key.Equals(akey);
+
+            return cachedProviders[key] as T;
         }
 
         internal bool Register(Provider provider)
@@ -57,73 +40,50 @@ namespace Naukri.Moltk.Fusion
 
             var key = provider.Key;
 
-            if (!cachedProviderMap.TryGetValue(key, out var keyCached))
+            if (cachedProviders.TryGetValue(key, out var cachedProvider))
             {
-                keyCached = new();
-                cachedProviderMap[key] = keyCached;
+                // 如果 provider 與已快取的 provider (衝突) 報錯
+                if (provider != cachedProvider)
+                {
+                    throw new ArgumentException($"Provider conflict: {provider} and {cachedProvider}");
+                }
+                // 相同就略過
+                else
+                {
+                    return false;
+                }
             }
-            return keyCached.Add(provider);
+            else
+            {
+                // 不存在則新增之
+                cachedProviders[key] = provider;
+                return true;
+            }
         }
 
         internal bool Unregister(Provider provider)
         {
             var key = provider.Key;
 
-            if (!cachedProviderMap.TryGetValue(key, out var keyCached))
-            {
-                return false;
-            }
-
-            var isRemoved = keyCached.Remove(provider);
-
-            if (keyCached.Count == 0)
-            {
-                cachedProviderMap.Remove(key);
-            }
-
-            return isRemoved;
+            return cachedProviders.Remove(key);
         }
 
-        private void Awake()
+        private void Resolve()
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
-        }
-
-        private void OnDestroy()
-        {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-            ComponentLocator<ProviderScope>.Invalidate();
-        }
-
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            EnsureSceneProviderCached(scene);
-        }
-
-        private void OnSceneUnloaded(Scene scene)
-        {
-            loadedScenes.Remove(scene);
-        }
-
-        private void EnsureSceneProviderCached(Scene scene)
-        {
-            if (loadedScenes.Contains(scene))
-            {
-                return;
-            }
-            loadedScenes.Add(scene);
-
-            var roots = scene.GetRootGameObjects();
-
-            foreach (var provider in roots.SelectMany(it => it.GetComponentsInChildren<Provider>(true)))
+            var providers = FindObjectsOfType<Provider>();
+            foreach (var provider in providers)
             {
                 Register(provider);
             }
         }
+
+        private void OnDestroy()
+        {
+            ComponentLocator<ProviderScope>.Invalidate();
+        }
     }
 
-    partial class ProviderScope : IComponentCreatedHandler
+    partial class ProviderScope
     {
         internal const string kInstanceName = "[Provider Scope]";
 
