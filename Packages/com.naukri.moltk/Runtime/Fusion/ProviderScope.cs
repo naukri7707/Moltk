@@ -1,6 +1,4 @@
-﻿using Naukri.InspectorMaid;
-using Naukri.Moltk.Utility;
-using System;
+﻿using Naukri.Moltk.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,58 +12,31 @@ namespace Naukri.Moltk.Fusion
         private readonly HashSet<Scene> loadedScenes = new();
 
         private readonly Dictionary<
-                    Type,
-            Dictionary<
                 ProviderKey,
                 HashSet<Provider>
-                >
-            > providerCache = new();
+                > cachedProviderMap = new();
+
+        private IEnumerable<Provider> CachedProviders => cachedProviderMap.Values.SelectMany(set => set);
 
         public T GetProvider<T>() where T : Provider
         {
-            return GetProvider<T>(null);
+            return CachedProviders.OfType<T>().FirstOrDefault();
         }
 
         public T GetProvider<T>(ProviderKey key)
           where T : Provider
         {
-            var type = typeof(T);
-            return GetProvider(type, key) as T;
-        }
-
-        public Provider GetProvider(Type type)
-        {
-            return GetProvider(type, null);
-        }
-
-        public Provider GetProvider(Type type, ProviderKey key)
-        {
-            var typedProvidersCache = GetTypedProvidersCache(type, key);
-            return typedProvidersCache.FirstOrDefault();
+            return cachedProviderMap[key].OfType<T>().FirstOrDefault();
         }
 
         public T[] GetProviders<T>() where T : Provider
         {
-            return GetProviders<T>(null);
+            return CachedProviders.OfType<T>().ToArray();
         }
 
         public T[] GetProviders<T>(ProviderKey key) where T : Provider
         {
-            var type = typeof(T);
-            var typedProvidersCache = GetTypedProvidersCache(type, key);
-
-            return typedProvidersCache.Cast<T>().ToArray();
-        }
-
-        public Provider[] GetProviders(Type type)
-        {
-            return GetProviders(type, null);
-        }
-
-        public Provider[] GetProviders(Type type, ProviderKey key)
-        {
-            var typedProvidersCache = GetTypedProvidersCache(type, key);
-            return typedProvidersCache.ToArray();
+            return cachedProviderMap[key].OfType<T>().ToArray();
         }
 
         public void OnComponentCreated()
@@ -79,50 +50,38 @@ namespace Naukri.Moltk.Fusion
             }
         }
 
-        internal void Register(Provider provider)
+        internal bool Register(Provider provider)
         {
             if (provider == null)
-                return;
-            var type = provider.GetType();
-            if (!providerCache.TryGetValue(type, out var typeCache))
-            {
-                typeCache = new();
-                providerCache[type] = typeCache;
-            }
+                return false;
 
             var key = provider.Key;
-            if (!typeCache.TryGetValue(key, out var typedProvidersCache))
-            {
-                typedProvidersCache = new();
-                typeCache[key] = typedProvidersCache;
-            }
 
-            typedProvidersCache.Add(provider);
+            if (!cachedProviderMap.TryGetValue(key, out var keyCached))
+            {
+                keyCached = new();
+                cachedProviderMap[key] = keyCached;
+            }
+            return keyCached.Add(provider);
         }
 
-        internal void Unregister(Provider provider)
+        internal bool Unregister(Provider provider)
         {
-            var type = provider.GetType();
-            if (!providerCache.TryGetValue(type, out var typeCache))
-            {
-                return;
-            }
-
             var key = provider.Key;
-            if (!typeCache.TryGetValue(key, out var typedProvidersCache))
+
+            if (!cachedProviderMap.TryGetValue(key, out var keyCached))
             {
-                return;
+                return false;
             }
 
-            typedProvidersCache.Remove(provider);
-            if (typedProvidersCache.Count == 0)
+            var isRemoved = keyCached.Remove(provider);
+
+            if (keyCached.Count == 0)
             {
-                typeCache.Remove(provider.Key);
-                if (typeCache.Count == 0)
-                {
-                    providerCache.Remove(type);
-                }
+                cachedProviderMap.Remove(key);
             }
+
+            return isRemoved;
         }
 
         private void Awake()
@@ -135,18 +94,6 @@ namespace Naukri.Moltk.Fusion
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
             ComponentLocator<ProviderScope>.Invalidate();
-        }
-
-        private HashSet<Provider> GetTypedProvidersCache(Type type, ProviderKey key)
-        {
-            var typeCache = providerCache[type];
-            var typedProvidersCache = key switch
-            {
-                null => typeCache.FirstOrDefault().Value,
-                _ => typeCache[key],
-            };
-
-            return typedProvidersCache;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
