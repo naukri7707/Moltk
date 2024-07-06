@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Naukri.Moltk.Fusion
+﻿namespace Naukri.Moltk.Fusion
 {
     public record ProviderEvent()
     {
