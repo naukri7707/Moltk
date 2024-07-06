@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 
 namespace Naukri.Moltk.Fusion
 {
@@ -83,7 +84,14 @@ namespace Naukri.Moltk.Fusion
 
         public T Read<T>() where T : Provider
         {
-            return Read<T>(null);
+            var scope = ProviderScope.LocateOrCreate();
+            var provider = scope.GetProvider<T>();
+
+            // 初始化 provider，我們應該保證 Provider 永遠只在 Read 時被初始化
+            // 這樣可以規範開發者正確的使用這個框架，也能增進效能
+            provider.Initialize();
+
+            return provider;
         }
 
         public T Read<T>(ProviderKey key) where T : Provider
