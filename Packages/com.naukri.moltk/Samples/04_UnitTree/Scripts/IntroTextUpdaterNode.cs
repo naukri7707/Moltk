@@ -21,13 +21,11 @@ public class IntroTextUpdaterNode : UnitTreeBehaviour
         var pageDataProvider = IntroTextProvider.Of(this);
         var state = pageDataProvider.State;
 
-        var newState = state with
+        pageDataProvider.SetState(s => s with
         {
             Title = targetProperty.HasFlag(Property.Title) ? title : pageDataProvider.State.Title,
             Content = targetProperty.HasFlag(Property.Content) ? content : pageDataProvider.State.Content,
-        };
-
-        pageDataProvider.SetText(newState);
+        });
     }
 
     [Flags]
