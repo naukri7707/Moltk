@@ -112,10 +112,7 @@ namespace Naukri.Moltk.Fusion
     {
         public static bool KeepAlive(Provider provider)
         {
-            if (!ProviderScope.TryLocate(out var scope))
-            {
-                throw new InvalidOperationException($"Can not locate {nameof(ProviderScope)}.");
-            }
+            var scope = ProviderScope.LocateOrCreate();
             DontDestroyOnLoad(provider);
             return scope.Register(provider);
         }
