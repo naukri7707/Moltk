@@ -14,9 +14,8 @@ namespace Naukri.Moltk.XRKeyboard
 
         protected string originalText;
 
-        protected override void Reset()
+        protected virtual void Reset()
         {
-            base.Reset();
             inputField = GetComponent<TMP_InputField>();
         }
 

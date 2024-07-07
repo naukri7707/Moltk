@@ -7,17 +7,15 @@ namespace Naukri.Moltk.Fusion
         internal void Render();
     }
 
-    public abstract class ViewController : Consumer, IViewController
+    public abstract class ViewController : ConsumerBase, IViewController
     {
         void IViewController.Render() => Render();
 
-        protected sealed override void OnBuild() => Render();
+        internal override void OnRefesh() => Render();
 
-        protected override void Start()
+        protected virtual void Start()
         {
-            base.Start();
-
-            OnBuild();
+            OnRefesh();
         }
 
         protected abstract void Render();
@@ -28,25 +26,39 @@ namespace Naukri.Moltk.Fusion
     {
         void IViewController.Render() => Render();
 
+        internal override void OnRefesh()
+        {
+            // Restore base.OnRefresh() logic
+            var stateChanged = SetState(Build);
+
+            // If stateChanged, the UI was re-render from SetState already,
+            // So we don't neet to call Render in this case.
+            // But we still need to call Render if the state wasn't changed,
+            // Because sometime the UI only depend on it's provider but not self state.
+            if (!stateChanged)
+            {
+                Render();
+            }
+        }
+
+        internal override bool SetStateImpl(TState newState)
+        {
+            var stateChanged = base.SetStateImpl(newState);
+
+            // Rerender UI if state changed
+            if (stateChanged)
+            {
+                Render();
+            }
+
+            return stateChanged;
+        }
+
         protected abstract void Render();
 
-        protected override void Start()
+        protected virtual void Start()
         {
-            base.Start();
-
             node.Refresh();
-        }
-
-        protected override void OnStateChanged()
-        {
-            base.OnStateChanged();
-            Render();
-        }
-
-        protected override void OnBuilt()
-        {
-            base.OnBuilt();
-            Render();
         }
     }
 }

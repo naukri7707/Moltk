@@ -1,6 +1,6 @@
 ﻿using Naukri.InspectorMaid;
 using Naukri.InspectorMaid.Layout;
-using Naukri.Moltk.Core;
+using Naukri.Moltk.Fusion;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityFx.Outline;
@@ -16,7 +16,7 @@ namespace Naukri.Moltk.Outline
         Hover,
     }
 
-    public partial class OutlineService : MoltkService
+    public partial class OutlineService : Provider
     {
         public OutlineEffect outlineEffect;
 
@@ -105,7 +105,7 @@ namespace Naukri.Moltk.Outline
             Hover(gameObject, toggle);
         }
 
-        protected override void Start()
+        protected virtual void Start()
         {
             outlineEffect.OutlineLayers = outlineLayers;
         }

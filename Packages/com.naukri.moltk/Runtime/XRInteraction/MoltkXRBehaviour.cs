@@ -1,21 +1,31 @@
 ﻿using Naukri.InspectorMaid;
 using Naukri.InspectorMaid.Layout;
-using Naukri.Moltk.Core;
+using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Naukri.Moltk.XRInteraction
 {
-    public abstract partial class MoltkXRBehaviour : MoltkBehaviour
+    public abstract partial class MoltkXRBehaviour : MonoBehaviour
     {
         protected XRBaseInteractable interactable;
 
         private bool IsGameObjectHasInteractable => GetComponent<XRBaseInteractable>() != null;
 
-        protected override void Awake()
+        protected virtual void Awake()
         {
             interactable = GetComponent<XRBaseInteractable>();
         }
+
+        protected virtual void Start() { }
+
+        protected virtual void OnDestroy() { }
+
+        protected virtual void OnEnable() { }
+
+        protected virtual void OnDisable() { }
+
+        protected virtual void Update() { }
 
         private void AddXRSimpleInteractable()
         {

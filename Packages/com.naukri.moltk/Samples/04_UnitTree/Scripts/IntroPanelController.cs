@@ -47,6 +47,10 @@ public class IntroPanelController : ViewController
     protected override void OnInitialize(IContext ctx)
     {
         base.OnInitialize(ctx);
+        //
+        introTextProvider = ctx.Watch<IntroTextProvider>();
+        pageNumberProvider = ctx.Watch<PageNumberProvider>();
+
         // 設定按鈕點擊事件
         prevButton.onClick.AddListener(PrevPage);
         nextButton.onClick.AddListener(NextPage);

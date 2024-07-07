@@ -1,6 +1,6 @@
 ﻿using Naukri.InspectorMaid;
 using Naukri.InspectorMaid.Layout;
-using Naukri.Moltk.Core;
+using Naukri.Moltk.Fusion;
 using Naukri.Moltk.UnitTree;
 using Naukri.Moltk.UnitTree.Events;
 using System;
@@ -12,7 +12,7 @@ using UnityEngine.UIElements;
 
 namespace Naukri.Moltk.DataStorage
 {
-    public partial class SavedataService : MoltkService
+    public partial class SavedataService : Provider
     {
         [SerializeField]
         private FileDirectory fileDirectory = FileDirectory.PersistentDataPath;
@@ -109,9 +109,8 @@ namespace Naukri.Moltk.DataStorage
             Savedata.SaveToJsonFile(savedata, FilePath, format);
         }
 
-        protected override void OnEnable()
+        protected virtual void OnEnable()
         {
-            base.OnEnable();
             if (autoSaving == AutoSaving.ByTime)
             {
                 autoSavingCoroutine = StartCoroutine(SaveEveryInterval());
@@ -122,9 +121,8 @@ namespace Naukri.Moltk.DataStorage
             }
         }
 
-        protected override void OnDisable()
+        protected virtual void OnDisable()
         {
-            base.OnDisable();
             if (autoSaving == AutoSaving.ByTime)
             {
                 if (autoSavingCoroutine != null)

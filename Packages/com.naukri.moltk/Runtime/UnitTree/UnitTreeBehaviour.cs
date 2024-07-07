@@ -1,11 +1,10 @@
-﻿using Naukri.Moltk.Core;
-using Naukri.Moltk.UnitTree.Events;
+﻿using Naukri.Moltk.UnitTree.Events;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Naukri.Moltk.UnitTree
 {
-    public abstract class UnitTreeBehaviour : MoltkBehaviour
+    public abstract class UnitTreeBehaviour : MonoBehaviour
     {
         private UnitTreeController _controller;
 
