@@ -18,7 +18,7 @@ namespace Naukri.Moltk.UnitTree.Behaviours
                 {
                     var path = GetRelativePath();
 
-                    var savedataService = ProviderManager.Get<SavedataService>();
+                    var savedataService = Fusion.Providers.Get<SavedataService>();
 
                     _dataCell = savedataService.Savedata[path];
                     _dataCell.CreateIfNotExist();
