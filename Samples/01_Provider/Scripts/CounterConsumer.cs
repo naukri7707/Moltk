@@ -13,8 +13,8 @@ public class CounterConsumer : Consumer
         counterProvider = ctx.Watch<CounterProvider>();
     }
 
-    // 在 OnBuild 消費註冊的提供者在狀態變化後提供的資料
-    protected override void OnBuild()
+    // 在 Build 消費註冊的提供者在狀態變化後提供的資料
+    protected override void Build()
     {
         // 消費 counterProvider 提供的資料，這裡簡單的將 Value 打印出來。
         print($"Your value: {counterProvider.State.Value}");

@@ -1,14 +1,15 @@
-﻿using Naukri.Moltk.Core;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 
 namespace Naukri.Moltk.Fusion
 {
     public interface IConsumer
     {
-        internal void OnBuild();
+        internal void OnRefresh();
     }
 
-    public abstract class Consumer : MoltkBehaviour, IConsumer
+    [AddComponentMenu("")] // Hide ProviderScope in AddComponent's Menu
+    public abstract class ConsumerBase : MonoBehaviour, IConsumer
     {
         private Node _node;
 
@@ -19,14 +20,14 @@ namespace Naukri.Moltk.Fusion
         {
             get
             {
-                _node ??= new(OnBuild, HandleEvent);
+                _node ??= new(OnRefesh, HandleEvent);
                 return _node;
             }
         }
 
-        void IConsumer.OnBuild()
+        void IConsumer.OnRefresh()
         {
-            OnBuild();
+            OnRefesh();
         }
 
         internal virtual bool Initialize()
@@ -40,22 +41,29 @@ namespace Naukri.Moltk.Fusion
             return true;
         }
 
-        protected override sealed void Awake()
+        internal abstract void OnRefesh();
+
+        protected IContext GetContext() => node;
+
+        protected void Awake()
         {
-            base.Awake();
             Initialize();
         }
 
-        protected override void OnDestroy()
+        protected virtual void OnDestroy()
         {
-            base.OnDestroy();
             node.Dispose();
         }
 
         protected virtual void OnInitialize(IContext ctx) { }
 
-        protected abstract void OnBuild();
-
         protected virtual void HandleEvent(Provider sender, ProviderEvent evt) { }
+    }
+
+    public class Consumer : ConsumerBase
+    {
+        internal override void OnRefesh() => Build();
+
+        protected virtual void Build() { }
     }
 }

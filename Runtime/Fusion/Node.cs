@@ -83,26 +83,12 @@ namespace Naukri.Moltk.Fusion
 
         public T Read<T>() where T : Provider
         {
-            var scope = ProviderScope.LocateOrCreate();
-            var provider = scope.GetProvider<T>();
-
-            // 初始化 provider，我們應該保證 Provider 永遠只在 Read 時被初始化
-            // 這樣可以規範開發者正確的使用這個框架，也能增進效能
-            provider.Initialize();
-
-            return provider;
+            return ProviderManager.Get<T>();
         }
 
         public T Read<T>(ProviderKey key) where T : Provider
         {
-            var scope = ProviderScope.LocateOrCreate();
-            var provider = scope.GetProvider<T>(key);
-
-            // 初始化 provider，我們應該保證 Provider 永遠只在 Read 時被初始化
-            // 這樣可以規範開發者正確的使用這個框架，也能增進效能
-            provider.Initialize();
-
-            return provider;
+            return ProviderManager.Get<T>(key);
         }
 
         public void Refresh()

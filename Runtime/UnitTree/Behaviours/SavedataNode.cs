@@ -1,6 +1,7 @@
 ﻿using Naukri.InspectorMaid;
 using Naukri.InspectorMaid.Layout;
 using Naukri.Moltk.DataStorage;
+using Naukri.Moltk.Fusion;
 using UnityEngine;
 
 namespace Naukri.Moltk.UnitTree.Behaviours
@@ -16,14 +17,15 @@ namespace Naukri.Moltk.UnitTree.Behaviours
                 if (_dataCell.IsNull)
                 {
                     var path = GetRelativePath();
-                    _dataCell = SavedataService.Savedata[path];
+
+                    var savedataService = ProviderManager.Get<SavedataService>();
+
+                    _dataCell = savedataService.Savedata[path];
                     _dataCell.CreateIfNotExist();
                 }
                 return _dataCell;
             }
         }
-
-        private SavedataService SavedataService => MoltkManager.GetService<SavedataService>();
     }
 
     [
