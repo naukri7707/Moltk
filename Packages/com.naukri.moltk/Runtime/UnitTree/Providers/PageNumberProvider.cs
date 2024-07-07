@@ -25,9 +25,8 @@ namespace Naukri.Moltk.UnitTree.Providers
             return state ?? new PageNumber();
         }
 
-        protected override void Start()
+        protected virtual void Start()
         {
-            base.Start();
             pages = GetAllPage();
             SetState(s => s with
             {
@@ -35,16 +34,14 @@ namespace Naukri.Moltk.UnitTree.Providers
             });
         }
 
-        protected override void OnEnable()
+        protected virtual void OnEnable()
         {
-            base.Awake();
             var controller = UnitTreeController.Of(this);
             controller.EventHandler.AddListener(HandleEvent);
         }
 
-        protected override void OnDisable()
+        protected virtual void OnDisable()
         {
-            base.OnDisable();
             var controller = UnitTreeController.Of(this);
             controller.EventHandler.RemoveListener(HandleEvent);
         }

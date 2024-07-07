@@ -1,7 +1,6 @@
 ﻿using Naukri.Moltk.Utility;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Naukri.Moltk.Fusion
@@ -11,26 +10,16 @@ namespace Naukri.Moltk.Fusion
     {
         private readonly Dictionary<ProviderKey, Provider> cachedProviders = new();
 
-        public T GetProvider<T>() where T : Provider
-        {
-            var key = new ProviderKey<Type>(typeof(T));
-
-            return GetProvider<T>(key);
-        }
-
-        public T GetProvider<T>(ProviderKey key)
-          where T : Provider
+        public Provider GetProvider(ProviderKey key)
         {
             if (!cachedProviders.ContainsKey(key))
             {
                 // 如果找不到 Provider 就再遍例一次場景中的 Provider 並嘗試註冊
                 Resolve();
             }
-            var akey = cachedProviders.Keys.FirstOrDefault();
+            var provider = cachedProviders[key];
 
-            bool a = key.Equals(akey);
-
-            return cachedProviders[key] as T;
+            return provider;
         }
 
         internal bool Register(Provider provider)

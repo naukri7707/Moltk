@@ -84,9 +84,8 @@ namespace Naukri.Moltk.XRKeyboard
     // Editor
     partial class XRKeyboardButton
     {
-        protected override void Reset()
+        protected virtual void Reset()
         {
-            base.Reset();
             var images = GetComponentsInChildren<Image>();
             button = GetComponentInChildren<Button>();
             iconImage = Array.Find(images, it => it.name == "Icon");

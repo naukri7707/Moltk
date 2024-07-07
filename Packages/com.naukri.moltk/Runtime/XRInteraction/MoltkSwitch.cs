@@ -51,8 +51,6 @@ namespace Naukri.Moltk.XRInteraction
 
         protected override void OnEnable()
         {
-            base.OnEnable();
-
             if (switchType == XRISwitchType.OnSelectEntered)
             {
                 interactable.selectEntered.AddListener(OnSelectEntered);
@@ -73,8 +71,6 @@ namespace Naukri.Moltk.XRInteraction
 
         protected override void OnDisable()
         {
-            base.OnDisable();
-
             if (switchType == XRISwitchType.OnSelectEntered)
             {
                 interactable.selectEntered.RemoveListener(OnSelectEntered);

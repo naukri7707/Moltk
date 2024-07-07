@@ -1,5 +1,4 @@
-﻿using Naukri.Moltk;
-using Naukri.Moltk.Fusion;
+﻿using Naukri.Moltk.Fusion;
 using Naukri.Moltk.Outline;
 using UnityEngine;
 using UnityEngine.UI;
@@ -78,7 +77,7 @@ public class OutlinePanelController : ViewController<OutlinePanelState>
     protected override void OnInitialize(IContext ctx)
     {
         base.OnInitialize(ctx);
-        outlineService = MoltkManager.GetService<OutlineService>();
+        outlineService = ctx.Read<OutlineService>();
 
         highlightButton.onClick.AddListener(Highlight);
         hoverButton.onClick.AddListener(Hover);

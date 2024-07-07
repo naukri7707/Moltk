@@ -43,7 +43,7 @@ public class CounterPanelController : ViewController<CounterPanelState>
         };
     }
 
-    // 覆寫抽象方法 Render 來更新你的 UI，他類似於 Consumer 中的 OnBuild 會在及訂閱的 Provider 和自己的狀態更新時被呼叫
+    // 覆寫抽象方法 Render 來更新你的 UI 。他與 Build 類似，會在及訂閱的 Provider 和自己的狀態更新時被呼叫
     // 但同時他也會在 Start 時被調用一次
     protected override void Render()
     {

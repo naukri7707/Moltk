@@ -96,10 +96,8 @@ namespace Naukri.Moltk.UnitTree
             eventHandler.Invoke(evt);
         }
 
-        protected override void Start()
+        protected virtual void Start()
         {
-            base.Start();
-
             if (startImmediately)
             {
                 var node = customStartNode
