@@ -3,7 +3,7 @@ using UnityEngine.Assertions;
 
 namespace Naukri.Moltk.Fusion
 {
-    public static class ProviderManager
+    public static class Providers
     {
         public static bool KeepAlive(Provider provider)
         {
