@@ -83,12 +83,12 @@ namespace Naukri.Moltk.Fusion
 
         public T Read<T>() where T : Provider
         {
-            return ProviderManager.Get<T>();
+            return Providers.Get<T>();
         }
 
         public T Read<T>(ProviderKey key) where T : Provider
         {
-            return ProviderManager.Get<T>(key);
+            return Providers.Get<T>(key);
         }
 
         public void Refresh()
