@@ -56,5 +56,8 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Moltk.sln"
+    "dotnet.defaultSolution": "Moltk.sln",
+    "cSpell.words": [
+        "Moltk"
+    ]
 }

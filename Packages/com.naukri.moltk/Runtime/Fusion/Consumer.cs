@@ -20,14 +20,14 @@ namespace Naukri.Moltk.Fusion
         {
             get
             {
-                _node ??= new(OnRefesh, HandleEvent);
+                _node ??= new(OnRefresh, HandleEvent);
                 return _node;
             }
         }
 
         void IConsumer.OnRefresh()
         {
-            OnRefesh();
+            OnRefresh();
         }
 
         internal virtual bool Initialize()
@@ -41,7 +41,7 @@ namespace Naukri.Moltk.Fusion
             return true;
         }
 
-        internal abstract void OnRefesh();
+        internal abstract void OnRefresh();
 
         protected IContext GetContext() => node;
 
@@ -62,7 +62,7 @@ namespace Naukri.Moltk.Fusion
 
     public class Consumer : ConsumerBase
     {
-        internal override void OnRefesh() => Build();
+        internal override void OnRefresh() => Build();
 
         protected virtual void Build() { }
     }

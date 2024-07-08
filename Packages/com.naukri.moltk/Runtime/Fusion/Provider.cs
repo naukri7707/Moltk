@@ -32,7 +32,7 @@ namespace Naukri.Moltk.Fusion
             node.SendEvent(this, evt);
         }
 
-        internal override void OnRefesh()
+        internal override void OnRefresh()
         {
             // Do nothing
         }
@@ -92,7 +92,7 @@ namespace Naukri.Moltk.Fusion
             return isInitializing;
         }
 
-        internal override void OnRefesh()
+        internal override void OnRefresh()
         {
             SetState(Build);
         }
