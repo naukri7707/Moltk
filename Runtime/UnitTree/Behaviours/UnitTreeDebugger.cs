@@ -1,8 +1,8 @@
-﻿using Naukri.InspectorMaid;
+﻿using System.Linq;
+using Naukri.InspectorMaid;
 using Naukri.InspectorMaid.Layout;
 using Naukri.Moltk.UnitTree.Events;
 using Naukri.Moltk.UnitTree.Utility;
-using System.Linq;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -19,6 +19,13 @@ namespace Naukri.Moltk.UnitTree.Behaviours
         public Transform selectRoot;
 
         private UnitTreeController unitTreeController;
+
+        public enum HelperMethod
+        {
+            LeafSelector,
+
+            SetTierName,
+        }
 
         [Target]
         public HelperMethod TargetHelper { get; set; }
@@ -108,13 +115,6 @@ namespace Naukri.Moltk.UnitTree.Behaviours
 #if UNITY_EDITOR
             UnityEditor.EditorGUIUtility.PingObject(CurrentNode.gameObject);
 #endif
-        }
-
-        public enum HelperMethod
-        {
-            LeafSelector,
-
-            SetTierName,
         }
     }
 

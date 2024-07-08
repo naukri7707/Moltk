@@ -2,24 +2,24 @@
 {
     public class Subscription
     {
+        private readonly Node input;
+
+        private readonly Node output;
+
         internal Subscription(Node input, Node output)
         {
             this.input = input;
             this.output = output;
         }
 
-        private readonly Node input;
-
-        private readonly Node output;
-
         public void Start()
         {
-            Node.Link(input, output);
+            Node.Subscribe(input, output);
         }
 
         public void Cancel()
         {
-            Node.Unlink(input, output);
+            Node.Unsubscribe(input, output);
         }
     }
 }

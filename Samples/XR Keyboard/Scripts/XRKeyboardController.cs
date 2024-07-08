@@ -1,32 +1,17 @@
-﻿using Naukri.Moltk.Fusion;
-using System;
+﻿using System;
+using Naukri.Moltk.Fusion;
 
 namespace Naukri.Moltk.XRKeyboard
 {
     public enum Capslock
     {
         Off,
-
         Once,
-
         On,
-    }
-
-    public record XRKeyboardState(
-        string Text = "",
-        bool IsOpen = false,
-        Capslock Capslock = Capslock.Off,
-        XRKeyboardBinding Binding = null
-        )
-    {
     }
 
     public class XRKeyboardController : ViewController<XRKeyboardState>
     {
-        public record OnConfirm(string Text) : ProviderEvent;
-
-        public record OnCancel : ProviderEvent;
-
         public void SendKey(string text)
         {
             SetState(s => s with
@@ -116,5 +101,17 @@ namespace Naukri.Moltk.XRKeyboard
             var state = State;
             gameObject.SetActive(state.IsOpen);
         }
+        public record OnConfirm(string Text) : ProviderEvent;
+
+        public record OnCancel : ProviderEvent;
+    }
+
+    public record XRKeyboardState(
+        string Text = "",
+        bool IsOpen = false,
+        Capslock Capslock = Capslock.Off,
+        XRKeyboardBinding Binding = null
+        )
+    {
     }
 }

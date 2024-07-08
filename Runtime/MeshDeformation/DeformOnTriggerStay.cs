@@ -1,5 +1,5 @@
-﻿using Naukri.Moltk.MeshDeformation;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Naukri.Moltk.MeshDeformation;
 using UnityEngine;
 
 public class DeformOnTriggerStay : MonoBehaviour
@@ -15,6 +15,13 @@ public class DeformOnTriggerStay : MonoBehaviour
     private TransformValue lastTransformValue;
 
     private Dictionary<DeformableObject, TransformValue> deformableLastTransformValues = new();
+
+    public enum Filter
+    {
+        None,
+
+        TransformChanged,
+    }
 
     protected virtual void Reset()
     {
@@ -92,12 +99,5 @@ public class DeformOnTriggerStay : MonoBehaviour
         return Vector3.Distance(oldValue.position, newValue.position) > distanceTolerance
             || Quaternion.Angle(oldValue.rotation, newValue.rotation) > angleTolerance
             || oldValue.localScale != newValue.localScale;
-    }
-
-    public enum Filter
-    {
-        None,
-
-        TransformChanged,
     }
 }

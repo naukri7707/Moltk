@@ -1,7 +1,7 @@
-﻿using Naukri.InspectorMaid;
+﻿using System;
+using Naukri.InspectorMaid;
 using Naukri.Moltk.UnitTree;
 using Naukri.Moltk.Utility;
-using System;
 using UnityEngine;
 
 public class IntroTextUpdaterNode : UnitTreeBehaviour
@@ -15,6 +15,14 @@ public class IntroTextUpdaterNode : UnitTreeBehaviour
     [SerializeField, TextArea(3, 5), ShowIf(nameof(targetProperty), Property.Content, ConditionLogic.Flag)]
     private string content;
 
+    [Flags]
+    public enum Property
+    {
+        Title = Flag._00,
+
+        Content = Flag._01,
+    }
+
     protected override void OnEnter()
     {
         base.OnEnter();
@@ -26,13 +34,5 @@ public class IntroTextUpdaterNode : UnitTreeBehaviour
             Title = targetProperty.HasFlag(Property.Title) ? title : pageDataProvider.State.Title,
             Content = targetProperty.HasFlag(Property.Content) ? content : pageDataProvider.State.Content,
         });
-    }
-
-    [Flags]
-    public enum Property
-    {
-        Title = Flag._00,
-
-        Content = Flag._01,
     }
 }

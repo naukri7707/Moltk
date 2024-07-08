@@ -1,18 +1,13 @@
-﻿using Naukri.InspectorMaid;
+﻿using System;
+using System.Linq;
+using Naukri.InspectorMaid;
 using Naukri.Moltk.Fusion;
 using Naukri.Moltk.UnitTree.Events;
 using Naukri.Moltk.UnitTree.Utility;
-using System;
-using System.Linq;
 using UnityEngine;
 
 namespace Naukri.Moltk.UnitTree.Providers
 {
-    public record PageNumber(int Current = 0, int Total = 0)
-    {
-        public string PageNumberText => $"{(Current + 1).ToString().PadLeft(Total.ToString().Length, '0')} / {Total}";
-    }
-
     public class PageNumberProvider : Provider<PageNumber>
     {
         [ReadOnly]
@@ -67,5 +62,9 @@ namespace Naukri.Moltk.UnitTree.Providers
                 });
             }
         }
+    }
+    public record PageNumber(int Current = 0, int Total = 0)
+    {
+        public string PageNumberText => $"{(Current + 1).ToString().PadLeft(Total.ToString().Length, '0')} / {Total}";
     }
 }

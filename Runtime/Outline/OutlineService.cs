@@ -24,6 +24,15 @@ namespace Naukri.Moltk.Outline
 
         public RenderPipeline renderPipeline = RenderPipeline.BuiltIn;
 
+        public enum RenderPipeline
+        {
+            BuiltIn,
+
+            Universal,
+
+            HighDefinition,
+        }
+
         private bool IsRuntime => Application.isPlaying;
 
         public void Highlight(GameObject gameObject, bool highlight = true)
@@ -132,15 +141,6 @@ namespace Naukri.Moltk.Outline
             }
 
             return outlineEffect.OutlineLayers != null;
-        }
-
-        public enum RenderPipeline
-        {
-            BuiltIn,
-
-            Universal,
-
-            HighDefinition,
         }
     }
 

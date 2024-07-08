@@ -3,9 +3,7 @@ using System.Threading.Tasks;
 
 namespace Naukri.Moltk.Fusion
 {
-    public interface IProvider : IConsumer
-    {
-    }
+    public interface IProvider : IConsumer { }
 
     public interface IProvider<T> : IProvider
     {

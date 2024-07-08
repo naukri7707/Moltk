@@ -2,10 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public record CounterPanelState(bool IsOdd = false)
-{
-}
-
 // 繼承一個 ViewController<TState> 用來實作控制 CounterPanel 的 Controller
 // 如果你的 Controller 不需要狀態也可以繼承無狀態版本的 ViewController
 public class CounterPanelController : ViewController<CounterPanelState>
@@ -66,4 +62,8 @@ public class CounterPanelController : ViewController<CounterPanelState>
             Value = startNumber
         });
     }
+}
+
+public record CounterPanelState(bool IsOdd = false)
+{
 }
