@@ -20,6 +20,21 @@ namespace Naukri.Moltk.XRKeyboard
         [SerializeField, ShowIf(nameof(action), Action.SendKey)]
         protected string shiftKey;
 
+        public enum Action
+        {
+            SendKey,
+
+            Backspace,
+
+            Clear,
+
+            ToggleCapslock,
+
+            Confirm,
+
+            Cancel,
+        }
+
         protected override void Render()
         {
             base.Render();
@@ -67,21 +82,6 @@ namespace Naukri.Moltk.XRKeyboard
                     keyboardController.Cancel();
                     break;
             }
-        }
-
-        public enum Action
-        {
-            SendKey,
-
-            Backspace,
-
-            Clear,
-
-            ToggleCapslock,
-
-            Confirm,
-
-            Cancel,
         }
     }
 }

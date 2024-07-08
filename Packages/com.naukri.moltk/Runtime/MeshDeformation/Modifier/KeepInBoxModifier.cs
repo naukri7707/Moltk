@@ -4,6 +4,11 @@ namespace Naukri.Moltk.MeshDeformation.Modifier
 {
     public class KeepInBoxModifier : VertexModifier<KeepInBoxModifier.IParameter>
     {
+        public interface IParameter
+        {
+            BoxCollider BoxCollider { get; }
+        }
+
         protected override void OnVertexModify(ref Vector3 current, VertexModifierArgs args)
         {
             var currentWorldPos = args.deformable.transform.TransformPoint(current);
@@ -12,11 +17,6 @@ namespace Naukri.Moltk.MeshDeformation.Modifier
             {
                 current = args.deformable.transform.InverseTransformPoint(closestWorldPos);
             }
-        }
-
-        public interface IParameter
-        {
-            BoxCollider BoxCollider { get; }
         }
     }
 }

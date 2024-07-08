@@ -1,6 +1,4 @@
 ﻿namespace Naukri.Moltk.Fusion
 {
-    public record ProviderEvent()
-    {
-    }
+    public record ProviderEvent;
 }

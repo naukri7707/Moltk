@@ -33,6 +33,19 @@ namespace Naukri.Moltk.XRInteraction
             return angle;
         }
 
+        protected virtual void OnDrawGizmosSelected()
+        {
+            DrawGizmos();
+        }
+
+        protected virtual void OnDrawGizmos()
+        {
+            if (showPlane)
+            {
+                DrawGizmos();
+            }
+        }
+
         private void DrawGizmos()
         {
             if (!showPlane)
@@ -60,19 +73,6 @@ namespace Naukri.Moltk.XRInteraction
             // Draw the zero angle axis
             Gizmos.color = Color.blue;
             Gizmos.DrawLine(transform.position, transform.position + transform.up);
-        }
-
-        protected virtual void OnDrawGizmosSelected()
-        {
-            DrawGizmos();
-        }
-
-        protected virtual void OnDrawGizmos()
-        {
-            if (showPlane)
-            {
-                DrawGizmos();
-            }
         }
     }
 }

@@ -1,11 +1,11 @@
-﻿using Naukri.InspectorMaid;
+﻿using System;
+using System.Collections;
+using System.Diagnostics;
+using Naukri.InspectorMaid;
 using Naukri.InspectorMaid.Layout;
 using Naukri.Moltk.Fusion;
 using Naukri.Moltk.UnitTree;
 using Naukri.Moltk.UnitTree.Events;
-using System;
-using System.Collections;
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
@@ -44,6 +44,15 @@ namespace Naukri.Moltk.DataStorage
         private UnitTreeController autoSavingTree;
 
         private Savedata savedata;
+
+        public enum AutoSaving
+        {
+            None,
+
+            ByTime,
+
+            OnUnitTreeNodeChanged,
+        }
 
         [Template]
         public string FilePath
@@ -173,15 +182,6 @@ namespace Naukri.Moltk.DataStorage
         {
             GUIUtility.systemCopyBuffer = FilePath;
             print("file path copied.");
-        }
-
-        public enum AutoSaving
-        {
-            None,
-
-            ByTime,
-
-            OnUnitTreeNodeChanged,
         }
     }
 

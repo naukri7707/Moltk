@@ -5,18 +5,18 @@ namespace Naukri.Moltk.MeshDeformation
 {
     public readonly struct Triangle : IEquatable<Triangle>
     {
+        public readonly Vector3 a;
+
+        public readonly Vector3 b;
+
+        public readonly Vector3 c;
+
         public Triangle(Vector3 a, Vector3 b, Vector3 c)
         {
             this.a = a;
             this.b = b;
             this.c = c;
         }
-
-        public readonly Vector3 a;
-
-        public readonly Vector3 b;
-
-        public readonly Vector3 c;
 
         public static bool operator ==(Triangle left, Triangle right)
         {

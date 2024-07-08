@@ -3,14 +3,6 @@ using Naukri.Moltk.Outline;
 using UnityEngine;
 using UnityEngine.UI;
 
-public record OutlinePanelState(
-    bool IsHighlighted = false,
-    bool IsHovered = false,
-    bool IsSelected = false
-    )
-{
-}
-
 public class OutlinePanelController : ViewController<OutlinePanelState>
 {
     public GameObject targetGameObject;
@@ -88,4 +80,12 @@ public class OutlinePanelController : ViewController<OutlinePanelState>
     {
         return on ? "ON" : "OFF";
     }
+}
+
+public record OutlinePanelState(
+    bool IsHighlighted = false,
+    bool IsHovered = false,
+    bool IsSelected = false
+    )
+{
 }

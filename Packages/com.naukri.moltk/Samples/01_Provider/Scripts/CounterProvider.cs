@@ -1,13 +1,6 @@
 ﻿using Naukri.InspectorMaid;
 using Naukri.Moltk.Fusion;
 
-// 定義 CounterData 的狀態，建議使用 record
-// record 可以簡單理解為 "不可變" 的類別，每次修改都須要產生一個新的實例，這有助於我們追蹤狀態變化
-// 如果你不了解 record，可以參考官方文檔 https://learn.microsoft.com/zh-tw/dotnet/csharp/fundamentals/types/records
-public record CounterData(int Value = 0)
-{
-}
-
 // 定義 CounterProvider，它使用 CounterData 作為狀態
 public class CounterProvider : Provider<CounterData>
 {
@@ -40,4 +33,11 @@ public class CounterProvider : Provider<CounterData>
         // 如果是就生成一個新的實例，否不做變更返回舊的狀態
         return state ?? new CounterData();
     }
+}
+
+// 定義 CounterData 的狀態，建議使用 record
+// record 可以簡單理解為 "不可變" 的類別，每次修改都須要產生一個新的實例，這有助於我們追蹤狀態變化
+// 如果你不了解 record，可以參考官方文檔 https://learn.microsoft.com/zh-tw/dotnet/csharp/fundamentals/types/records
+public record CounterData(int Value = 0)
+{
 }

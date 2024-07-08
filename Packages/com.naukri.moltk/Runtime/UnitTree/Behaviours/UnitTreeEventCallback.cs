@@ -1,7 +1,7 @@
-﻿using Naukri.InspectorMaid;
+﻿using System;
+using Naukri.InspectorMaid;
 using Naukri.Moltk.UnitTree;
 using Naukri.Moltk.Utility;
-using System;
 using UnityEngine.Events;
 
 public class UnitTreeEventCallback : UnitTreeBehaviour
@@ -13,6 +13,14 @@ public class UnitTreeEventCallback : UnitTreeBehaviour
 
     [ShowIf(nameof(callback), Event.OnExit, conditionLogic: ConditionLogic.Flag)]
     public UnityEvent onExit;
+
+    [Flags]
+    public enum Event
+    {
+        OnEnter = Flag._00,
+
+        OnExit = Flag._01,
+    }
 
     protected override void OnEnter()
     {
@@ -30,13 +38,5 @@ public class UnitTreeEventCallback : UnitTreeBehaviour
             base.OnExit();
             onExit.Invoke();
         }
-    }
-
-    [Flags]
-    public enum Event
-    {
-        OnEnter = Flag._00,
-
-        OnExit = Flag._01,
     }
 }

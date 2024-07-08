@@ -8,15 +8,13 @@ namespace Naukri.Moltk.Fusion
 
     public interface IContext
     {
-        public Subscription Listen<T>(Provider provider) where T : Provider;
-
         public Subscription Listen<T>() where T : Provider;
 
         public Subscription Listen<T>(ProviderKey key) where T : Provider;
 
-        public T Watch<T>() where T : Provider;
+        public Subscription Listen<T>(Provider provider) where T : Provider;
 
-        public T Watch<T>(ProviderKey key) where T : Provider;
+        public void NotifyListeners();
 
         public T Read<T>() where T : Provider;
 
@@ -24,24 +22,43 @@ namespace Naukri.Moltk.Fusion
 
         public void Refresh();
 
-        public void NotifyListeners();
+        public T Watch<T>() where T : Provider;
+
+        public T Watch<T>(ProviderKey key) where T : Provider;
     }
 
     public partial class Node : IContext, IDisposable
     {
+        private readonly Action onRefresh;
+
+        private readonly ProviderEventHandler providerEventHandler;
+
+        private readonly HashSet<Node> publishers = new();
+
+        private readonly HashSet<Node> subscribers = new();
+
         public Node(Action onRefresh, ProviderEventHandler providerEventHandler)
         {
             this.onRefresh = onRefresh;
             this.providerEventHandler = providerEventHandler;
         }
 
-        private readonly HashSet<Node> inputs = new();
+        public void Dispose()
+        {
+            foreach (var subscriber in subscribers.ToArray())
+            {
+                Unsubscribe(this, subscriber);
+            }
+            foreach (var publisher in publishers.ToArray())
+            {
+                Unsubscribe(publisher, this);
+            }
+        }
 
-        private readonly HashSet<Node> outputs = new();
-
-        private readonly Action onRefresh;
-
-        private readonly ProviderEventHandler providerEventHandler;
+        public void HandleEvent(Provider sender, ProviderEvent evt)
+        {
+            providerEventHandler.Invoke(sender, evt);
+        }
 
         public Subscription Listen<T>() where T : Provider
         {
@@ -58,6 +75,37 @@ namespace Naukri.Moltk.Fusion
         public Subscription Listen<T>(Provider provider) where T : Provider
         {
             return CreateSubscription(provider.node, this);
+        }
+
+        public void NotifyListeners()
+        {
+            foreach (var subscriber in subscribers.ToArray())
+            {
+                subscriber.Refresh();
+            }
+        }
+
+        public T Read<T>() where T : Provider
+        {
+            return Providers.Get<T>();
+        }
+
+        public T Read<T>(ProviderKey key) where T : Provider
+        {
+            return Providers.Get<T>(key);
+        }
+
+        public void Refresh()
+        {
+            onRefresh?.Invoke();
+        }
+
+        public void SendEvent(Provider sender, ProviderEvent evt)
+        {
+            foreach (var subscriber in subscribers.ToArray())
+            {
+                subscriber.HandleEvent(sender, evt);
+            }
         }
 
         public T Watch<T>() where T : Provider
@@ -78,75 +126,24 @@ namespace Naukri.Moltk.Fusion
 
         public void Watch<T>(Provider provider) where T : Provider
         {
-            Link(provider.node, this);
+            Subscribe(provider.node, this);
         }
 
-        public T Read<T>() where T : Provider
+        internal static Subscription CreateSubscription(Node publisher, Node subscriber)
         {
-            return Providers.Get<T>();
+            return new Subscription(publisher, subscriber);
         }
 
-        public T Read<T>(ProviderKey key) where T : Provider
+        internal static void Subscribe(Node publisher, Node subscriber)
         {
-            return Providers.Get<T>(key);
+            publisher.subscribers.Add(subscriber);
+            subscriber.publishers.Add(publisher);
         }
 
-        public void Refresh()
+        internal static void Unsubscribe(Node publisher, Node subscriber)
         {
-            onRefresh?.Invoke();
-        }
-
-        public void NotifyListeners()
-        {
-            foreach (var output in outputs.ToArray())
-            {
-                output.Refresh();
-            }
-        }
-
-        public void SendEvent(Provider sender, ProviderEvent evt)
-        {
-            foreach (var output in outputs.ToArray())
-            {
-                output.HandleEvent(sender, evt);
-            }
-        }
-
-        public void HandleEvent(Provider sender, ProviderEvent evt)
-        {
-            providerEventHandler.Invoke(sender, evt);
-        }
-
-        public void Dispose()
-        {
-            foreach (var output in outputs.ToArray())
-            {
-                Unlink(this, output);
-            }
-            foreach (var input in inputs.ToArray())
-            {
-                Unlink(input, this);
-            }
-        }
-    }
-
-    partial class Node
-    {
-        internal static Subscription CreateSubscription(Node input, Node output)
-        {
-            return new Subscription(input, output);
-        }
-
-        internal static void Link(Node input, Node output)
-        {
-            input.outputs.Add(output);
-            output.inputs.Add(input);
-        }
-
-        internal static void Unlink(Node input, Node output)
-        {
-            input.outputs.Remove(output);
-            output.inputs.Remove(input);
+            publisher.subscribers.Remove(subscriber);
+            subscriber.publishers.Remove(publisher);
         }
     }
 }

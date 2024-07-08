@@ -1,13 +1,6 @@
 ﻿using Naukri.Moltk.Fusion;
 using UnityEngine;
 
-public record IntroText(
-    string Title = "",
-    string Content = ""
-    )
-{
-}
-
 public partial class IntroTextProvider : Provider<IntroText>
 {
     protected override IntroText Build(IntroText state)
@@ -22,4 +15,11 @@ partial class IntroTextProvider
     {
         return component.GetComponentInParent<IntroTextProvider>();
     }
+}
+
+public record IntroText(
+    string Title = "",
+    string Content = ""
+    )
+{
 }

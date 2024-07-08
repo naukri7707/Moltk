@@ -5,16 +5,16 @@ namespace Naukri.Moltk.DataStorage
 {
     public readonly struct CellProperty
     {
+        private readonly Savedata savedata;
+
+        private readonly string[] keys;
+
         internal CellProperty(Savedata savedata, string path)
         {
             this.savedata = savedata;
             Path = path ?? throw new ArgumentNullException(nameof(path));
             keys = path.Length == 0 ? new string[0] : path.Split('.').ToArray();
         }
-
-        private readonly Savedata savedata;
-
-        private readonly string[] keys;
 
         public static CellProperty Null => new(null, "");
 
