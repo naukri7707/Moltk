@@ -26,13 +26,12 @@ public class IntroTextUpdaterNode : UnitTreeBehaviour
     protected override void OnEnter()
     {
         base.OnEnter();
-        var pageDataProvider = IntroTextProvider.Of(this);
-        var state = pageDataProvider.State;
 
-        pageDataProvider.SetState(s => s with
+        var controller = ctx.Read<IntroPanelController>();
+        controller.SetState(s => s with
         {
-            Title = targetProperty.HasFlag(Property.Title) ? title : pageDataProvider.State.Title,
-            Content = targetProperty.HasFlag(Property.Content) ? content : pageDataProvider.State.Content,
+            Title = targetProperty.HasFlag(Property.Title) ? title : s.Title,
+            Content = targetProperty.HasFlag(Property.Content) ? content : s.Content,
         });
     }
 }

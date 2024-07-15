@@ -639,7 +639,6 @@ GameObject:
   - component: {fileID: 1142114608}
   - component: {fileID: 1142114607}
   - component: {fileID: 1142114606}
-  - component: {fileID: 1142114609}
   - component: {fileID: 1142114610}
   m_Layer: 0
   m_Name: UnitTree
@@ -701,18 +700,6 @@ Transform:
   - {fileID: 440882172745847504}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1142114609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1142114605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88fa91043f10af24e96a93d2ca94a256, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1142114610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -725,7 +712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 205faaba1a18475408387cc9bd136271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pages: []
+  unitTreeController: {fileID: 1142114607}
 --- !u!1 &1289515965
 GameObject:
   m_ObjectHideFlags: 0

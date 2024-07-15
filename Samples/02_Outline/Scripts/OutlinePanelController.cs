@@ -1,9 +1,15 @@
-﻿using Naukri.Moltk.Fusion;
-using Naukri.Moltk.Outline;
+﻿using Naukri.Moltk.Outline;
+using Naukri.Physarum;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OutlinePanelController : ViewController<OutlinePanelState>
+public record OutlinePanelState(
+    bool IsHighlighted = false,
+    bool IsHovered = false,
+    bool IsSelected = false
+) { }
+
+public class OutlinePanelController : ViewController<OutlinePanelState>.Behaviour
 {
     public GameObject targetGameObject;
 
@@ -19,58 +25,45 @@ public class OutlinePanelController : ViewController<OutlinePanelState>
 
     public Text selectButtonText;
 
-    private OutlineService outlineService;
-
     public void Highlight()
     {
+        var outlineService = ctx.Read<OutlineService>();
         outlineService.ToggleHighlight(targetGameObject);
-        SetState(s => s with
-        {
-            IsHighlighted = outlineService.IsHighlighted(targetGameObject),
-        });
+        SetState(s => s with { IsHighlighted = outlineService.IsHighlighted(targetGameObject), });
     }
 
     public void Hover()
     {
+        var outlineService = ctx.Read<OutlineService>();
         outlineService.ToggleHover(targetGameObject);
-        SetState(s => s with
-        {
-            IsHovered = outlineService.IsHovered(targetGameObject),
-        });
+        SetState(s => s with { IsHovered = outlineService.IsHovered(targetGameObject), });
     }
 
     public void Select()
     {
+        var outlineService = ctx.Read<OutlineService>();
         outlineService.ToggleSelect(targetGameObject);
 
-        SetState(s => s with
-        {
-            IsSelected = outlineService.IsSelected(targetGameObject),
-        });
+        SetState(s => s with { IsSelected = outlineService.IsSelected(targetGameObject), });
     }
 
-    protected override OutlinePanelState Build(OutlinePanelState state)
+    protected override OutlinePanelState Build()
     {
-        return state ?? new OutlinePanelState();
-    }
-
-    protected override void Render()
-    {
+        var state = State ?? new();
         // Highlight button
-        highlightButtonText.text = $"Highlight ({OnOffText(State.IsHighlighted)})";
+        highlightButtonText.text = $"Highlight ({OnOffText(state.IsHighlighted)})";
 
         // Hover button
-        hoverButtonText.text = $"Hover ({OnOffText(State.IsHovered)})";
+        hoverButtonText.text = $"Hover ({OnOffText(state.IsHovered)})";
 
         // Select button
-        selectButtonText.text = $"Select ({OnOffText(State.IsSelected)})";
+        selectButtonText.text = $"Select ({OnOffText(state.IsSelected)})";
+        return state;
     }
 
-    protected override void OnInitialize(IContext ctx)
+    protected override void Awake()
     {
-        base.OnInitialize(ctx);
-        outlineService = ctx.Read<OutlineService>();
-
+        base.Awake();
         highlightButton.onClick.AddListener(Highlight);
         hoverButton.onClick.AddListener(Hover);
         selectButton.onClick.AddListener(Select);
@@ -80,12 +73,4 @@ public class OutlinePanelController : ViewController<OutlinePanelState>
     {
         return on ? "ON" : "OFF";
     }
-}
-
-public record OutlinePanelState(
-    bool IsHighlighted = false,
-    bool IsHovered = false,
-    bool IsSelected = false
-    )
-{
 }

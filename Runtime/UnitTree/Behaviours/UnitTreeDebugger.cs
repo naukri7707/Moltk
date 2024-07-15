@@ -105,8 +105,9 @@ namespace Naukri.Moltk.UnitTree.Behaviours
             }
         }
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             unitTreeController = GetComponent<UnitTreeController>();
         }
 
