@@ -1,7 +1,7 @@
 ﻿using Naukri.InspectorMaid;
 using Naukri.InspectorMaid.Layout;
 using Naukri.Moltk.DataStorage;
-using Naukri.Moltk.Fusion;
+using Naukri.Physarum;
 using UnityEngine;
 
 namespace Naukri.Moltk.UnitTree.Behaviours
@@ -18,7 +18,7 @@ namespace Naukri.Moltk.UnitTree.Behaviours
                 {
                     var path = GetRelativePath();
 
-                    var savedataService = Fusion.Providers.Get<SavedataService>();
+                    var savedataService = ctx.Read<SavedataService>();
 
                     _dataCell = savedataService.Savedata[path];
                     _dataCell.CreateIfNotExist();
@@ -31,7 +31,6 @@ namespace Naukri.Moltk.UnitTree.Behaviours
     [
         ScriptField,
         Base,
-
         ColumnScope,
             ColumnScope, HideIf(nameof(isEditing)),
                 Label("Data Cell Json"),

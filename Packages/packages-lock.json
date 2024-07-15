@@ -15,10 +15,17 @@
       "source": "embedded",
       "dependencies": {
         "com.unity.xr.interaction.toolkit": "2.5.2",
-        "com.naukri.inspector-maid": "2.12.2",
+        "com.naukri.inspector-maid": "https://github.com/naukri7707/InspectorMaid.git",
         "com.unityfx.outline": "0.8.5",
         "com.unity.nuget.newtonsoft-json": "3.2.1"
       }
+    },
+    "com.naukri.physarum": {
+      "version": "https://github.com/naukri7707/Physarum.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "99f7fae07282cb8f10e890036aa94b1c6a6bacfe"
     },
     "com.unity.asset-store-validation": {
       "version": "0.1.3",

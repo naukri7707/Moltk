@@ -1,10 +1,10 @@
-﻿using Naukri.Moltk.Fusion;
+﻿using Naukri.Physarum;
 using TMPro;
 using UnityEngine;
 
 namespace Naukri.Moltk.XRKeyboard
 {
-    public class XRKeyboardTMP_Input : XRKeyboardBinding
+    public class XRKeyboardTMPInput : XRKeyboardBinding
     {
         [SerializeField]
         protected TMP_InputField inputField;
@@ -19,15 +19,15 @@ namespace Naukri.Moltk.XRKeyboard
             inputField = GetComponent<TMP_InputField>();
         }
 
-        protected override void OnInitialize(IContext ctx)
+        protected override void Awake()
         {
-            base.OnInitialize(ctx);
+            base.Awake();
             inputField.onSelect.AddListener(OnInputFieldSelect);
         }
 
-        protected override void Render()
+        protected override void Build()
         {
-            var keyboardState = keyboardController.State;
+            var keyboardState = ctx.Read<XRKeyboardController>().State;
 
             if (updateImmediately)
             {
@@ -37,7 +37,7 @@ namespace Naukri.Moltk.XRKeyboard
             }
         }
 
-        protected override void HandleEvent(Provider sender, ProviderEvent evt)
+        protected override void HandleEvent(object sender, IElementEvent evt)
         {
             switch (evt)
             {

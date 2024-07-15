@@ -1,9 +1,11 @@
-﻿using Naukri.Moltk.Fusion;
-using Naukri.Moltk.UnitTree;
+﻿using Naukri.Moltk.UnitTree;
 using Naukri.Moltk.UnitTree.Providers;
+using Naukri.Physarum;
 using UnityEngine.UI;
 
-public class IntroPanelController : ViewController
+public record IntroPanelState(string Title = "", string Content = "");
+
+public class IntroPanelController : ViewController<IntroPanelState>.Behaviour
 {
     public UnitTreeController unitTreeController;
 
@@ -17,10 +19,6 @@ public class IntroPanelController : ViewController
 
     public Button nextButton;
 
-    private IntroTextProvider introTextProvider;
-
-    private PageNumberProvider pageNumberProvider;
-
     public void NextPage()
     {
         unitTreeController.MoveNext();
@@ -31,26 +29,24 @@ public class IntroPanelController : ViewController
         unitTreeController.RollBack();
     }
 
-    protected override void Render()
+    protected override IntroPanelState Build()
     {
-        var introText = introTextProvider.State;
-        var pageNumber = pageNumberProvider.State;
+        var state = State ?? new();
+        var pageNumberState = ctx.Watch<PageNumberProvider>().State;
         //
-        titleText.text = introText.Title;
-        contentText.text = introText.Content;
+        titleText.text = state.Title;
+        contentText.text = state.Content;
         //
-        pageNumberText.text = pageNumber.PageNumberText;
-        prevButton.gameObject.SetActive(pageNumber.Current > 0);
-        nextButton.gameObject.SetActive(pageNumber.Current < pageNumber.Total - 1);
+        pageNumberText.text = pageNumberState.PageNumberText;
+        prevButton.gameObject.SetActive(pageNumberState.CurrentPage > 0);
+        nextButton.gameObject.SetActive(pageNumberState.CurrentPage < pageNumberState.TotalPage - 1);
+
+        return state;
     }
 
-    protected override void OnInitialize(IContext ctx)
+    protected override void Awake()
     {
-        base.OnInitialize(ctx);
-        //
-        introTextProvider = ctx.Watch<IntroTextProvider>();
-        pageNumberProvider = ctx.Watch<PageNumberProvider>();
-
+        base.Awake();
         // 設定按鈕點擊事件
         prevButton.onClick.AddListener(PrevPage);
         nextButton.onClick.AddListener(NextPage);

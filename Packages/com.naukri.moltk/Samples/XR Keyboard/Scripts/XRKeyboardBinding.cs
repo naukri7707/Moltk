@@ -1,11 +1,9 @@
-﻿using Naukri.Moltk.Fusion;
+﻿using Naukri.Physarum;
 
 namespace Naukri.Moltk.XRKeyboard
 {
-    public abstract class XRKeyboardBinding : ViewController
+    public abstract class XRKeyboardBinding : Consumer.Behaviour
     {
-        protected XRKeyboardController keyboardController;
-
         private Subscription subscription;
 
         public void Bind()
@@ -18,15 +16,14 @@ namespace Naukri.Moltk.XRKeyboard
             subscription.Cancel();
         }
 
-        protected override void OnInitialize(IContext ctx)
+        protected override void Build()
         {
-            base.OnInitialize(ctx);
-            keyboardController = ctx.Read<XRKeyboardController>();
             subscription = ctx.Listen<XRKeyboardController>();
         }
 
         protected void OpenKeyboard(string text)
         {
+            var keyboardController = ctx.Read<XRKeyboardController>();
             keyboardController.Open(this, text);
         }
     }
