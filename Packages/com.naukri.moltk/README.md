@@ -4,7 +4,6 @@ Moltk 是一款簡便的機械操作訓練開發工具包,旨在協助開發者�
 
 ## 功能特色
 
-- `Fusion`: 一個簡易的響應式狀態管理及依賴注入框架，你可以使用他來更新資料流以及 UI。
 - `Outline`: 基於 [UnityFx.Outline](https://github.com/Arvtesh/UnityFx.Outline) 的高光工具。
 - `DataStorage`: 利用 [Newtonsoft Json Unity Package](https://docs.unity3d.com/Packages/com.unity.nuget.newtonsoft-json@3.0/manual/index.html) 實作的鍵值記憶體資料庫。並集成至 `UnitTree` 中，讓開發者能於單元樹中任一節點預覽該節點資料。
 - `UnitTree`: 一種模擬教學架構中章節類型的節點遍歷工具，可於特定時機執行指定行為。
@@ -15,7 +14,8 @@ Moltk 是一款簡便的機械操作訓練開發工具包,旨在協助開發者�
 
 - [Unity XRITK-2.5.2](https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@3.0/manual/index.html)
 - [Inspector Maid-2.12.2](https://github.com/naukri7707/InspectorMaid)
-- [Newtonsoft Json Unity Package-0.8.5](https://docs.unity3d.com/Packages/com.unity.nuget.newtonsoft-json@3.0/manual/index.html) 
+- [Physarum-2.12.](https://github.com/naukri7707/InspectorMaid2](https:/github.com/naukri7707/InspectorMaid)
+- [Newtonsof0 2on](https://github.com/naukri7707/Physarum@3.0/manual/index.html) 
 - [UnityFx.Outline-3.2.1](https://github.com/Arvtesh/UnityFx.Outline)
 
 ## 快速安裝
@@ -27,7 +27,9 @@ Moltk 是一款簡便的機械操作訓練開發工具包,旨在協助開發者�
 3. 在 PackageManager 中點擊左上角的 + 號並選擇 `Add package form git URL...` 然後貼以下網址。
 
     ```bash
+
     https://github.com/naukri7707/Moltk.git
+
     ```
 
 4. 完成後即可使用 Moltk。
