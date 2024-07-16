@@ -11,8 +11,10 @@ namespace Naukri.Moltk.XRKeyboard
 
         protected override void Build()
         {
-            var keyboardState = ctx.Watch<XRKeyboardController>().State;
-            inputField.text = keyboardState.Text;
+            var controller = XRKeyboardController.Of(this);
+            ctx.Listen(controller);
+            var state = controller.State;
+            inputField.text = state.Text;
         }
     }
 }

@@ -224,6 +224,11 @@ MonoScript:
   m_ClassName: InputSystemUIInputModule
   m_Namespace: UnityEngine.InputSystem.UI
   m_AssemblyName: Unity.InputSystem
+--- !u!1 &130557370 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8093046376191376345, guid: 72e732462199d6741a7451bc9943d1e2, type: 3}
+  m_PrefabInstance: {fileID: 1617715418}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &236514613
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,7 +666,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0ad835478efe6849afc584bb4afc138, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputField: {fileID: 604875126}
+  keyboard: {fileID: 1611159326}
   updateImmediately: 1
 --- !u!1 &766649991
 GameObject:
@@ -1295,7 +1300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0ad835478efe6849afc584bb4afc138, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputField: {fileID: 1071666412}
+  keyboard: {fileID: 1611159326}
   updateImmediately: 0
 --- !u!1 &1217483026
 GameObject:
@@ -1467,6 +1472,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 18673730}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1611159326 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8346218985394694689, guid: 72e732462199d6741a7451bc9943d1e2, type: 3}
+  m_PrefabInstance: {fileID: 1617715418}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c1fa472d1db7724c96a29aafe4f8986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1617715418
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2563,6 +2579,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8346218985394694689, guid: 72e732462199d6741a7451bc9943d1e2, type: 3}
+      propertyPath: uiRoot
+      value: 
+      objectReference: {fileID: 130557370}
     - target: {fileID: 8439026432889040925, guid: 72e732462199d6741a7451bc9943d1e2, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2634,6 +2654,10 @@ PrefabInstance:
     - target: {fileID: 8539017587467213287, guid: 72e732462199d6741a7451bc9943d1e2, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8659299206632544305, guid: 72e732462199d6741a7451bc9943d1e2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8696066105161496094, guid: 72e732462199d6741a7451bc9943d1e2, type: 3}
       propertyPath: m_AnchorMax.y

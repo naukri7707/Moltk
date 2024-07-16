@@ -1,5 +1,8 @@
 ﻿using System;
 using Naukri.Physarum;
+using Naukri.Physarum.Core;
+using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Naukri.Moltk.XRKeyboard
 {
@@ -15,10 +18,23 @@ namespace Naukri.Moltk.XRKeyboard
         bool IsOpen = false,
         Capslock Capslock = Capslock.Off,
         XRKeyboardBinding Binding = null
-    ) { }
+    );
 
-    public class XRKeyboardController : ViewController<XRKeyboardState>.Behaviour
+    partial class XRKeyboardController
     {
+        public static XRKeyboardController Of(Component component)
+        {
+            Assert.IsNotNull(component);
+
+            return component.GetComponentInParent<XRKeyboardController>();
+        }
+    }
+
+    public partial class XRKeyboardController : ViewController<XRKeyboardState>.Behaviour
+    {
+        [SerializeField]
+        private GameObject uiRoot;
+
         public void SendKey(string text)
         {
             SetState(s =>
@@ -65,14 +81,14 @@ namespace Naukri.Moltk.XRKeyboard
 
         public void Confirm()
         {
-            ctx.DispatchListeners(new OnConfirm(State.Text));
             SetState(s => s with { IsOpen = false });
+            ctx.DispatchListeners(new OnConfirm(State.Text));
         }
 
         public void Cancel()
         {
-            ctx.DispatchListeners(new OnCancel());
             SetState(s => s with { IsOpen = false });
+            ctx.DispatchListeners(new OnCancel());
         }
 
         public void Open(XRKeyboardBinding binding, string text)
@@ -88,8 +104,9 @@ namespace Naukri.Moltk.XRKeyboard
 
         protected override XRKeyboardState Build()
         {
-            gameObject.SetActive(State.IsOpen);
-            return State ?? new XRKeyboardState(IsOpen: gameObject.activeSelf);
+            var state = State ?? new XRKeyboardState(IsOpen: uiRoot.activeSelf);
+            uiRoot.SetActive(state.IsOpen);
+            return state;
         }
 
         public record OnConfirm(string Text) : IElementEvent;
