@@ -1,13 +1,15 @@
-﻿using Naukri.Physarum;
-using TMPro;
+using Naukri.Physarum;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Naukri.Moltk.XRKeyboard
 {
-    public class XRKeyboardTMPInput : XRKeyboardBinding
+    [RequireComponent(typeof(InputField))]
+    public class XRKeyboardInput : XRKeyboardBinding, IPointerClickHandler
     {
         #region fields
-        protected TMP_InputField inputField;
+        protected InputField inputField;
 
         [SerializeField]
         protected bool updateImmediately;
@@ -17,11 +19,20 @@ namespace Naukri.Moltk.XRKeyboard
 
         #region methods
 
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            OnInputFieldSelect(inputField.text);
+        }
+
+        protected virtual void Reset()
+        {
+            inputField = GetComponent<InputField>();
+        }
+
         protected override void Awake()
         {
             base.Awake();
-            inputField = GetComponent<TMP_InputField>();
-            inputField.onSelect.AddListener(OnInputFieldSelect);
+            inputField = GetComponent<InputField>();
         }
 
         protected override void Build()
@@ -60,7 +71,7 @@ namespace Naukri.Moltk.XRKeyboard
         {
             originalText = text;
             inputField.caretPosition = inputField.text.Length;
-            inputField.ForceLabelUpdate();
+            inputField.MoveTextEnd(false);
             OpenKeyboard(text);
         }
 
