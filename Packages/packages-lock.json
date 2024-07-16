@@ -15,7 +15,8 @@
       "source": "embedded",
       "dependencies": {
         "com.unity.xr.interaction.toolkit": "2.5.2",
-        "com.naukri.inspector-maid": "https://github.com/naukri7707/InspectorMaid.git",
+        "com.naukri.inspector-maid": "2.12.2",
+        "com.naukri.physarum": "0.1.2",
         "com.unityfx.outline": "0.8.5",
         "com.unity.nuget.newtonsoft-json": "3.2.1"
       }
@@ -25,7 +26,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "99f7fae07282cb8f10e890036aa94b1c6a6bacfe"
+      "hash": "5a557d48294e868e20bd8f70c31747f195afa917"
     },
     "com.unity.asset-store-validation": {
       "version": "0.1.3",
