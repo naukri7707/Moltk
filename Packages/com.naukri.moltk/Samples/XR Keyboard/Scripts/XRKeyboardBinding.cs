@@ -1,33 +1,46 @@
-﻿using Naukri.Moltk.Fusion;
+﻿using Naukri.Physarum;
+using UnityEngine;
 
 namespace Naukri.Moltk.XRKeyboard
 {
-    public abstract class XRKeyboardBinding : ViewController
+    public abstract class XRKeyboardBinding : Consumer.Behaviour
     {
-        protected XRKeyboardController keyboardController;
+        [SerializeField]
+        private XRKeyboardController keyboard;
+
+        protected XRKeyboardController Keyboard
+        {
+            get
+            {
+                if (keyboard == null)
+                {
+                    keyboard = ctx.Read<XRKeyboardController>();
+                }
+                return keyboard;
+            }
+        }
 
         private Subscription subscription;
 
+        #region methods
+
         public void Bind()
         {
-            subscription.Start();
+            subscription?.Cancel();
+            subscription = ctx.Listen(Keyboard);
         }
 
         public void Unbind()
         {
-            subscription.Cancel();
-        }
-
-        protected override void OnInitialize(IContext ctx)
-        {
-            base.OnInitialize(ctx);
-            keyboardController = ctx.Read<XRKeyboardController>();
-            subscription = ctx.Listen<XRKeyboardController>();
+            subscription?.Cancel();
+            subscription = null;
         }
 
         protected void OpenKeyboard(string text)
         {
-            keyboardController.Open(this, text);
+            Keyboard.Open(this, text);
         }
+
+        #endregion
     }
 }

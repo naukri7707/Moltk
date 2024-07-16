@@ -16,9 +16,17 @@
       "dependencies": {
         "com.unity.xr.interaction.toolkit": "2.5.2",
         "com.naukri.inspector-maid": "2.12.2",
+        "com.naukri.physarum": "0.1.2",
         "com.unityfx.outline": "0.8.5",
         "com.unity.nuget.newtonsoft-json": "3.2.1"
       }
+    },
+    "com.naukri.physarum": {
+      "version": "https://github.com/naukri7707/Physarum.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "5a557d48294e868e20bd8f70c31747f195afa917"
     },
     "com.unity.asset-store-validation": {
       "version": "0.1.3",

@@ -4,6 +4,7 @@ using Naukri.InspectorMaid.Layout;
 using Naukri.Moltk.UnitTree.Events;
 using Naukri.Moltk.UnitTree.Utility;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 
@@ -17,19 +18,15 @@ namespace Naukri.Moltk.UnitTree
         [SerializeField]
         private bool startImmediately = true;
 
-        [
-            SerializeField,
-            ShowIf(nameof(startImmediately)),
-            Target,
-            Slot(nameof(startNode))
-        ]
+        [SerializeField, ShowIf(nameof(startImmediately)), Target, Slot(nameof(startNode))]
         private bool customStartNode;
 
         [
             Template,
             ShowIf(nameof(customStartNode)),
             Target,
-            HelpBox("startNode can not be null.", HelpBoxMessageType.Error), ShowIf(nameof(startNode), null),
+            HelpBox("startNode can not be null.", HelpBoxMessageType.Error),
+            ShowIf(nameof(startNode), null),
         ]
         [SerializeField]
         private Transform startNode;
@@ -52,7 +49,8 @@ namespace Naukri.Moltk.UnitTree
         {
             var previous = LeafFinder.FindPreviousLeaf(currentNode);
 
-            if (previous == null)
+            // If there is no previous node or target is not a child of controller, return false
+            if (previous == null || !IsChild(previous))
             {
                 return false;
             }
@@ -70,7 +68,8 @@ namespace Naukri.Moltk.UnitTree
         {
             var next = LeafFinder.FindNextLeaf(currentNode);
 
-            if (next == null)
+            // If there is no next node or target is not a child of controller, return false
+            if (next == null || !IsChild(next))
             {
                 return false;
             }
@@ -87,7 +86,29 @@ namespace Naukri.Moltk.UnitTree
         /// <param name="target">The target node to move to.</param>
         public void MoveTo(Transform target)
         {
+            Assert.IsNotNull(target);
+
+            if (!IsChild(target))
+            {
+                throw new OperationCanceledException(
+                    $"'{target.name}' must be a child of controller '{name}'"
+                );
+            }
             MoveToImpl(target);
+        }
+
+        private bool IsChild(Transform target)
+        {
+            var current = target;
+            while (current != null)
+            {
+                if (current == transform)
+                {
+                    return true;
+                }
+                current = current.parent;
+            }
+            return false;
         }
 
         protected override void HandleTreeEvent(UnitTreeEvent evt)
@@ -96,13 +117,12 @@ namespace Naukri.Moltk.UnitTree
             eventHandler.Invoke(evt);
         }
 
-        protected virtual void Start()
+        protected override void Start()
         {
+            base.Start();
             if (startImmediately)
             {
-                var node = customStartNode
-                ? startNode
-                : LeafFinder.FindFirstLeaf(transform);
+                var node = customStartNode ? startNode : LeafFinder.FindFirstLeaf(transform);
 
                 MoveToImpl(node);
             }
@@ -110,9 +130,11 @@ namespace Naukri.Moltk.UnitTree
 
         private void MoveToImpl(Transform target)
         {
+            Assert.IsNotNull(target);
+
             if (target != null && target.childCount > 0)
             {
-                throw new Exception("target must be leaf node");
+                throw new OperationCanceledException($"{target.name} must be leaf node");
             }
             var lca = LeafFinder.FindLowestCommonAncestor(currentNode, target);
 
@@ -120,8 +142,12 @@ namespace Naukri.Moltk.UnitTree
             var nodeChangingEvent = new NodeChangingEvent(
                 currentNode != null ? currentNode.gameObject : null,
                 target != null ? target.gameObject : null
-                );
-            BroadcastMessage(nameof(HandleTreeEvent), nodeChangingEvent, SendMessageOptions.DontRequireReceiver);
+            );
+            BroadcastMessage(
+                nameof(HandleTreeEvent),
+                nodeChangingEvent,
+                SendMessageOptions.DontRequireReceiver
+            );
 
             // Deactivate nodes from current to LCA and activate nodes from LCA to target
             ExitNodesToLCA(currentNode, lca);
@@ -134,8 +160,12 @@ namespace Naukri.Moltk.UnitTree
             var nodeChangedEvent = new NodeChangedEvent(
                 currentNode != null ? currentNode.gameObject : null,
                 target != null ? target.gameObject : null
-                );
-            BroadcastMessage(nameof(HandleTreeEvent), nodeChangedEvent, SendMessageOptions.DontRequireReceiver);
+            );
+            BroadcastMessage(
+                nameof(HandleTreeEvent),
+                nodeChangedEvent,
+                SendMessageOptions.DontRequireReceiver
+            );
         }
 
         private void ExitNodesToLCA(Transform node, Transform lca)
@@ -162,7 +192,8 @@ namespace Naukri.Moltk.UnitTree
         HelpBox(
             "UnitTreeController is considered as the root node and is used to control the behavior and navigation of the UnitTree.",
             HelpBoxMessageType.Info
-            ), Style(marginBottom: "4"),
+        ),
+        Style(marginBottom: "4"),
         ScriptField,
         Base,
         Members,
@@ -176,6 +207,7 @@ namespace Naukri.Moltk.UnitTree
         /// <returns>The UnitTreeManager.</returns>
         public static UnitTreeController Of(Component component)
         {
+            Assert.IsNotNull(component);
             return component.GetComponentInParent<UnitTreeController>(true);
         }
     }
