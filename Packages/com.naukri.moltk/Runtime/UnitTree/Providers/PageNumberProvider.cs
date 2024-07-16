@@ -1,49 +1,34 @@
-﻿using Naukri.InspectorMaid;
-using Naukri.Moltk.Fusion;
-using Naukri.Moltk.UnitTree.Events;
-using Naukri.Moltk.UnitTree.Utility;
 using System;
 using System.Linq;
+using Naukri.Moltk.UnitTree.Events;
+using Naukri.Moltk.UnitTree.Utility;
+using Naukri.Physarum;
 using UnityEngine;
 
 namespace Naukri.Moltk.UnitTree.Providers
 {
-    public record PageNumber(int Current = 0, int Total = 0)
+    public record PageNumberState(int CurrentPage = 0, int TotalPage = 0)
     {
-        public string PageNumberText => $"{(Current + 1).ToString().PadLeft(Total.ToString().Length, '0')} / {Total}";
+        public string PageNumberText => $"{CurrentPage + 1}/{TotalPage}";
     }
 
-    public class PageNumberProvider : Provider<PageNumber>
+    public class PageNumberProvider : StateProvider<PageNumberState>.Behaviour
     {
-        [ReadOnly]
-        public Transform[] pages;
+        private Transform[] pages;
 
-        public string PageNumberText => State.PageNumberText;
+        [SerializeField]
+        private UnitTreeController unitTreeController;
 
-        protected override PageNumber Build(PageNumber state)
+        protected override void Awake()
         {
-            return state ?? new PageNumber();
-        }
-
-        protected virtual void Start()
-        {
+            base.Awake();
             pages = GetAllPage();
-            SetState(s => s with
-            {
-                Total = pages.Length,
-            });
         }
 
-        protected virtual void OnEnable()
+        protected override void Start()
         {
-            var controller = UnitTreeController.Of(this);
-            controller.EventHandler.AddListener(HandleEvent);
-        }
-
-        protected virtual void OnDisable()
-        {
-            var controller = UnitTreeController.Of(this);
-            controller.EventHandler.RemoveListener(HandleEvent);
+            base.Start();
+            SetState(s => s with { TotalPage = pages.Length });
         }
 
         protected virtual Transform[] GetAllPage()
@@ -51,21 +36,36 @@ namespace Naukri.Moltk.UnitTree.Providers
             return LeafFinder.FindAllLeaf(transform).ToArray();
         }
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            unitTreeController.EventHandler.AddListener(HandleTreeEvent);
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            unitTreeController.EventHandler.RemoveListener(HandleTreeEvent);
+        }
+
         protected virtual int GetNodeIndex(Transform node)
         {
             return Array.IndexOf(pages, node);
         }
 
-        private void HandleEvent(UnitTreeEvent unitTreeEvent)
+        private void HandleTreeEvent(UnitTreeEvent evt)
         {
-            if (unitTreeEvent is NodeChangedEvent nodeChangedEvent)
+            if (evt is NodeChangedEvent nodeChangedEvent)
             {
                 var idx = GetNodeIndex(nodeChangedEvent.to.transform);
-                SetState(s => s with
-                {
-                    Current = idx,
-                });
+                SetState(s => s with { CurrentPage = idx, });
             }
+        }
+
+        protected override PageNumberState Build()
+        {
+            var state = State ?? new();
+            return state;
         }
     }
 }

@@ -1,23 +1,22 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Naukri.Moltk.DataStorage
 {
     public sealed partial class Savedata
     {
-        private Savedata(int version, Cell data)
-        {
-            this.version = version;
-            this.data = data;
-        }
-
         public int version;
 
         internal Cell data;
 
         private bool isDestroy;
+        private Savedata(int version, Cell data)
+        {
+            this.version = version;
+            this.data = data;
+        }
 
         public bool IsDestroy => isDestroy;
 

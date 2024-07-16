@@ -1,10 +1,12 @@
-﻿using Naukri.Moltk.UnitTree.Events;
+﻿using System;
 using System.Collections.Generic;
+using Naukri.Moltk.UnitTree.Events;
+using Naukri.Physarum;
 using UnityEngine;
 
 namespace Naukri.Moltk.UnitTree
 {
-    public abstract class UnitTreeBehaviour : MonoBehaviour
+    public abstract class UnitTreeBehaviour : Consumer.Behaviour
     {
         private UnitTreeController _controller;
 
@@ -32,7 +34,7 @@ namespace Naukri.Moltk.UnitTree
 
             if (current == null)
             {
-                throw new System.Exception("Can't find controller in parent");
+                throw new InvalidOperationException("Can't find controller in parent");
             }
 
             names.Add(Controller.name);
@@ -43,38 +45,70 @@ namespace Naukri.Moltk.UnitTree
             return path;
         }
 
-        public void SendEvent<T>(EventType eventType = EventType.SelfOnly) where T : UnitTreeEvent, new()
+        public void SendEvent<T>(EventType eventType = EventType.SelfOnly)
+            where T : UnitTreeEvent, new()
         {
             switch (eventType)
             {
                 case EventType.SelfOnly:
-                    SendMessage(nameof(HandleTreeEvent), new T(), SendMessageOptions.DontRequireReceiver);
+                    SendMessage(
+                        nameof(HandleTreeEvent),
+                        new T(),
+                        SendMessageOptions.DontRequireReceiver
+                    );
                     break;
 
                 case EventType.Upwards:
-                    SendMessageUpwards(nameof(HandleTreeEvent), new T(), SendMessageOptions.DontRequireReceiver);
+                    SendMessageUpwards(
+                        nameof(HandleTreeEvent),
+                        new T(),
+                        SendMessageOptions.DontRequireReceiver
+                    );
                     break;
 
                 case EventType.Broadcast:
-                    BroadcastMessage(nameof(HandleTreeEvent), new T(), SendMessageOptions.DontRequireReceiver);
+                    BroadcastMessage(
+                        nameof(HandleTreeEvent),
+                        new T(),
+                        SendMessageOptions.DontRequireReceiver
+                    );
+                    break;
+
+                default:
                     break;
             }
         }
 
-        public void SendEvent<T>(T evt, EventType eventType = EventType.SelfOnly) where T : UnitTreeEvent
+        public void SendEvent<T>(T evt, EventType eventType = EventType.SelfOnly)
+            where T : UnitTreeEvent
         {
             switch (eventType)
             {
                 case EventType.SelfOnly:
-                    SendMessage(nameof(HandleTreeEvent), evt, SendMessageOptions.DontRequireReceiver);
+                    SendMessage(
+                        nameof(HandleTreeEvent),
+                        evt,
+                        SendMessageOptions.DontRequireReceiver
+                    );
                     break;
 
                 case EventType.Upwards:
-                    SendMessageUpwards(nameof(HandleTreeEvent), evt, SendMessageOptions.DontRequireReceiver);
+                    SendMessageUpwards(
+                        nameof(HandleTreeEvent),
+                        evt,
+                        SendMessageOptions.DontRequireReceiver
+                    );
                     break;
 
                 case EventType.Broadcast:
-                    BroadcastMessage(nameof(HandleTreeEvent), evt, SendMessageOptions.DontRequireReceiver);
+                    BroadcastMessage(
+                        nameof(HandleTreeEvent),
+                        evt,
+                        SendMessageOptions.DontRequireReceiver
+                    );
+                    break;
+
+                default:
                     break;
             }
         }
@@ -89,16 +123,12 @@ namespace Naukri.Moltk.UnitTree
             OnExit();
         }
 
-        protected virtual void HandleTreeEvent(UnitTreeEvent evt)
-        {
-        }
+        protected virtual void HandleTreeEvent(UnitTreeEvent evt) { }
 
-        protected virtual void OnEnter()
-        {
-        }
+        protected virtual void OnEnter() { }
 
-        protected virtual void OnExit()
-        {
-        }
+        protected virtual void OnExit() { }
+
+        protected override void Build() { }
     }
 }

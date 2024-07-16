@@ -1,6 +1,6 @@
 ﻿using Naukri.InspectorMaid;
 using Naukri.InspectorMaid.Layout;
-using Naukri.Moltk.Fusion;
+using Naukri.Physarum;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityFx.Outline;
@@ -16,13 +16,25 @@ namespace Naukri.Moltk.Outline
         Hover,
     }
 
-    public partial class OutlineService : Provider
+    public partial class OutlineService : Provider.Behaviour
     {
-        public OutlineEffect outlineEffect;
+        [SerializeField]
+        private OutlineEffect outlineEffect;
 
-        public OutlineLayerCollection outlineLayers;
+        [SerializeField]
+        private OutlineLayerCollection outlineLayers;
 
-        public RenderPipeline renderPipeline = RenderPipeline.BuiltIn;
+        [SerializeField]
+        private RenderPipeline renderPipeline = RenderPipeline.BuiltIn;
+
+        public enum RenderPipeline
+        {
+            BuiltIn,
+
+            Universal,
+
+            HighDefinition,
+        }
 
         private bool IsRuntime => Application.isPlaying;
 
@@ -38,6 +50,10 @@ namespace Naukri.Moltk.Outline
             {
                 layer.Remove(gameObject);
             }
+            else
+            {
+                // Do nothing
+            }
         }
 
         public void Select(GameObject gameObject, bool select = true)
@@ -51,6 +67,10 @@ namespace Naukri.Moltk.Outline
             {
                 layer.Remove(gameObject);
             }
+            else
+            {
+                // Do nothing
+            }
         }
 
         public void Hover(GameObject gameObject, bool hover = true)
@@ -63,6 +83,10 @@ namespace Naukri.Moltk.Outline
             else if (!hover && layer.Contains(gameObject))
             {
                 layer.Remove(gameObject);
+            }
+            else
+            {
+                // Do nothing
             }
         }
 
@@ -105,8 +129,9 @@ namespace Naukri.Moltk.Outline
             Hover(gameObject, toggle);
         }
 
-        protected virtual void Start()
+        protected override void Start()
         {
+            base.Start();
             outlineEffect.OutlineLayers = outlineLayers;
         }
 
@@ -133,15 +158,6 @@ namespace Naukri.Moltk.Outline
 
             return outlineEffect.OutlineLayers != null;
         }
-
-        public enum RenderPipeline
-        {
-            BuiltIn,
-
-            Universal,
-
-            HighDefinition,
-        }
     }
 
     [
@@ -149,21 +165,28 @@ namespace Naukri.Moltk.Outline
         Base,
         Slot(nameof(renderPipeline)),
         HelpBox("This pipeline is not supported yet.", HelpBoxMessageType.Error),
-            ShowIf(nameof(renderPipeline), RenderPipeline.Universal, RenderPipeline.HighDefinition),
-        ColumnScope, ShowIf(nameof(renderPipeline), RenderPipeline.BuiltIn),
-            Slot(nameof(outlineEffect)),
-            RowScope, ShowIf(nameof(outlineEffect), null),
-                HelpBox("You may need to add OutlineEffect to Camera.", HelpBoxMessageType.Warning), Style(flexGrow: "0.8"),
-                Button("Add to MainCamera", binding: nameof(AddOutlineEffectToMainCamera)), Style(flexGrow: "0.2"),
-            EndScope,
-            Slot(nameof(outlineLayers)),
-            HelpBox(@"You assign a value to the OutlineEffect's outlineLayers, but OutlineService will replace it.", HelpBoxMessageType.Warning), ShowIf(nameof(IsLayerCollectionExists)),
+        ShowIf(nameof(renderPipeline), RenderPipeline.Universal, RenderPipeline.HighDefinition),
+        ColumnScope,
+        ShowIf(nameof(renderPipeline), RenderPipeline.BuiltIn),
+        Slot(nameof(outlineEffect)),
+        RowScope,
+        ShowIf(nameof(outlineEffect), null),
+        HelpBox("You may need to add OutlineEffect to Camera.", HelpBoxMessageType.Warning),
+        Style(flexGrow: "0.8"),
+        Button("Add to MainCamera", binding: nameof(AddOutlineEffectToMainCamera)),
+        Style(flexGrow: "0.2"),
         EndScope,
-        ColumnScope, EnableIf(nameof(IsRuntime)),
-            Slot(nameof(ToggleHighlight), nameof(ToggleSelect), nameof(ToggleHover)),
+        Slot(nameof(outlineLayers)),
+        HelpBox(
+            @"You assign a value to the OutlineEffect's outlineLayers, but OutlineService will replace it.",
+            HelpBoxMessageType.Warning
+        ),
+        ShowIf(nameof(IsLayerCollectionExists)),
+        EndScope,
+        ColumnScope,
+        EnableIf(nameof(IsRuntime)),
+        Slot(nameof(ToggleHighlight), nameof(ToggleSelect), nameof(ToggleHover)),
         EndScope,
     ]
-    partial class OutlineService
-    {
-    }
+    partial class OutlineService { }
 }

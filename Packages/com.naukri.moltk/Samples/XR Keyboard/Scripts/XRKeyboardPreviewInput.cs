@@ -1,24 +1,20 @@
-﻿using Naukri.Moltk.Fusion;
+﻿using Naukri.Physarum;
 using TMPro;
+using UnityEngine;
 
 namespace Naukri.Moltk.XRKeyboard
 {
-    public class XRKeyboardPreviewInput : ViewController
+    public class XRKeyboardPreviewInput : Consumer.Behaviour
     {
-        public TMP_InputField inputField;
+        [SerializeField]
+        private TMP_InputField inputField;
 
-        private XRKeyboardController keyboardController;
-
-        protected override void OnInitialize(IContext ctx)
+        protected override void Build()
         {
-            base.OnInitialize(ctx);
-            keyboardController = ctx.Watch<XRKeyboardController>();
-        }
-
-        protected override void Render()
-        {
-            var keyboardState = keyboardController.State;
-            inputField.text = keyboardState.Text;
+            var controller = XRKeyboardController.Of(this);
+            ctx.Listen(controller);
+            var state = controller.State;
+            inputField.text = state.Text;
         }
     }
 }

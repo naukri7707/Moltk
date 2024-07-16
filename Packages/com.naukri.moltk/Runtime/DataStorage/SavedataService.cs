@@ -1,19 +1,20 @@
-﻿using Naukri.InspectorMaid;
-using Naukri.InspectorMaid.Layout;
-using Naukri.Moltk.Fusion;
-using Naukri.Moltk.UnitTree;
-using Naukri.Moltk.UnitTree.Events;
-using System;
+﻿using System;
 using System.Collections;
 using System.Diagnostics;
+using Naukri.InspectorMaid;
+using Naukri.InspectorMaid.Layout;
+using Naukri.Moltk.UnitTree;
+using Naukri.Moltk.UnitTree.Events;
+using Naukri.Physarum;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UIElements;
 
 namespace Naukri.Moltk.DataStorage
 {
-    public partial class SavedataService : Provider
+    public partial class SavedataService : Provider.Behaviour
     {
+        #region fields
+
         [SerializeField]
         private FileDirectory fileDirectory = FileDirectory.PersistentDataPath;
 
@@ -44,6 +45,9 @@ namespace Naukri.Moltk.DataStorage
         private UnitTreeController autoSavingTree;
 
         private Savedata savedata;
+        #endregion
+
+        #region properties
 
         [Template]
         public string FilePath
@@ -57,7 +61,10 @@ namespace Naukri.Moltk.DataStorage
                     FileDirectory.PersistentDataPath => Application.persistentDataPath,
                     FileDirectory.StreamingAssetsPath => Application.streamingAssetsPath,
                     FileDirectory.TemporaryCachePath => Application.temporaryCachePath,
-                    _ => throw new Exception($"Invalid {nameof(FileDirectory)}"),
+                    _
+                        => throw new ArgumentException(
+                            $"Invalid value for {nameof(fileDirectory)}: {fileDirectory}"
+                        ),
                 };
                 return $"{fileDirectoryPath}/{fileName}";
             }
@@ -75,7 +82,9 @@ namespace Naukri.Moltk.DataStorage
                     }
                     else
                     {
-                        throw new Exception("Savedata is null. Please load it first.");
+                        throw new InvalidOperationException(
+                            "Savedata is null. Please load it first."
+                        );
                     }
                 }
                 return savedata;
@@ -84,8 +93,10 @@ namespace Naukri.Moltk.DataStorage
         }
 
         private bool IsRuntime => Application.isPlaying;
-
         private string FilePathPreview => $"Savedata full file path:\n {FilePath}";
+        #endregion
+
+        #region methods
 
         [Template]
         public virtual void Load()
@@ -109,8 +120,9 @@ namespace Naukri.Moltk.DataStorage
             Savedata.SaveToJsonFile(savedata, FilePath, format);
         }
 
-        protected virtual void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             if (autoSaving == AutoSaving.ByTime)
             {
                 autoSavingCoroutine = StartCoroutine(SaveEveryInterval());
@@ -119,10 +131,15 @@ namespace Naukri.Moltk.DataStorage
             {
                 autoSavingTree.EventHandler.AddListener(SaveOnNodeChanged);
             }
+            else
+            {
+                // Do nothing
+            }
         }
 
-        protected virtual void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
             if (autoSaving == AutoSaving.ByTime)
             {
                 if (autoSavingCoroutine != null)
@@ -137,6 +154,10 @@ namespace Naukri.Moltk.DataStorage
                     autoSavingTree.EventHandler.RemoveListener(SaveOnNodeChanged);
                 }
             }
+            else
+            {
+                // Do nothing
+            }
         }
 
         private void SaveOnNodeChanged(UnitTreeEvent evt)
@@ -149,7 +170,7 @@ namespace Naukri.Moltk.DataStorage
 
         private IEnumerator SaveEveryInterval()
         {
-            for (; ; )
+            while (true)
             {
                 yield return new WaitForSeconds(autoSavingInterval);
                 Save();
@@ -175,6 +196,8 @@ namespace Naukri.Moltk.DataStorage
             print("file path copied.");
         }
 
+        #endregion
+
         public enum AutoSaving
         {
             None,
@@ -183,47 +206,7 @@ namespace Naukri.Moltk.DataStorage
 
             OnUnitTreeNodeChanged,
         }
-    }
 
-    [
-        ScriptField,
-        Base,
-        GroupScope("Service Settings", true),
-            Slot(
-            nameof(loadSavedataIfNull),
-            nameof(autoSaving)
-            ),
-            ColumnScope, ShowIf(nameof(autoSaving), AutoSaving.ByTime),
-                Slot(nameof(autoSavingInterval)),
-            EndScope,
-            ColumnScope, ShowIf(nameof(autoSaving), AutoSaving.OnUnitTreeNodeChanged),
-                Slot(nameof(autoSavingTree)),
-            EndScope,
-        EndScope,
-        GroupScope("Metadata", true),
-            Slot(
-            nameof(fileDirectory),
-            nameof(fileName),
-            nameof(format),
-            nameof(version),
-            nameof(versionConflictHandler)
-            ),
-            ColumnScope, Style(borderColorAll: "#000000", borderWidthAll: "1", borderRadiusAll: "5", marginVertical: "3", paddingVertical: "4", paddingHorizontal: "5"),
-                Label(binding: nameof(FilePathPreview)),
-                RowScope,
-                    Button("Copy", binding: nameof(CopyFilePath)), Style(flexGrow: "1"),
-                    Button("Open", binding: nameof(Open)), Style(flexGrow: "1"),
-                EndScope,
-            EndScope,
-            RowScope, Style(height: "30"),
-                Button("Save", binding: nameof(Save)), Style(flexGrow: "1"),
-                Button("Load", binding: nameof(Load)), Style(flexGrow: "1"),
-                Button("Print", binding: nameof(Print)), Style(flexGrow: "1"),
-            EndScope,
-        EndScope
-    ]
-    partial class SavedataService
-    {
         public enum FileDirectory
         {
             ConsoleLogPath,
@@ -237,4 +220,44 @@ namespace Naukri.Moltk.DataStorage
             TemporaryCachePath,
         }
     }
+
+    [
+          ScriptField,
+          Base,
+          GroupScope("Service Settings", true),
+              Slot(
+              nameof(loadSavedataIfNull),
+              nameof(autoSaving)
+              ),
+              ColumnScope, ShowIf(nameof(autoSaving), AutoSaving.ByTime),
+                  Slot(nameof(autoSavingInterval)),
+              EndScope,
+              ColumnScope, ShowIf(nameof(autoSaving), AutoSaving.OnUnitTreeNodeChanged),
+                  Slot(nameof(autoSavingTree)),
+              EndScope,
+          EndScope,
+          GroupScope("Metadata", true),
+              Slot(
+              nameof(fileDirectory),
+              nameof(fileName),
+              nameof(format),
+              nameof(version),
+              nameof(versionConflictHandler)
+              ),
+              ColumnScope, Style(borderColorAll: "#000000", borderWidthAll: "1", borderRadiusAll: "5", marginVertical: "3", paddingVertical: "4", paddingHorizontal: "5"),
+                  Label(binding: nameof(FilePathPreview)),
+                  RowScope,
+                      Button("Copy", binding: nameof(CopyFilePath)), Style(flexGrow: "1"),
+                      Button("Open", binding: nameof(Open)), Style(flexGrow: "1"),
+                  EndScope,
+              EndScope,
+              RowScope, Style(height: "30"),
+                  Button("Save", binding: nameof(Save)), Style(flexGrow: "1"),
+                  Button("Load", binding: nameof(Load)), Style(flexGrow: "1"),
+                  Button("Print", binding: nameof(Print)), Style(flexGrow: "1"),
+              EndScope,
+          EndScope
+      ]
+    partial class SavedataService
+    { }
 }

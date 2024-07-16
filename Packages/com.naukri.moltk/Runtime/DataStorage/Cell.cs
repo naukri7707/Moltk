@@ -1,14 +1,16 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Naukri.Moltk.DataStorage
 {
     internal partial class Cell : IDictionary<string, object>
     {
+        private readonly Dictionary<string, object> data = new();
+
         public Cell()
         {
         }
@@ -17,8 +19,6 @@ namespace Naukri.Moltk.DataStorage
         {
             LoadFromJson(json);
         }
-
-        private readonly Dictionary<string, object> data = new();
 
         public void SetCell(string json, bool append = false)
         {

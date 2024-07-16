@@ -11,15 +11,15 @@
 
         public class Args
         {
+
+            public readonly Triangle triangle;
+
+            public readonly Triangle originalTriangle;
             public Args(Triangle triangle, Triangle originalTriangle)
             {
                 this.triangle = triangle;
                 this.originalTriangle = originalTriangle;
             }
-
-            public readonly Triangle triangle;
-
-            public readonly Triangle originalTriangle;
         }
     }
 

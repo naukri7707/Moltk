@@ -1,5 +1,5 @@
-﻿using Naukri.InspectorMaid;
-using System;
+﻿using System;
+using Naukri.InspectorMaid;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
@@ -103,6 +103,24 @@ namespace Naukri.Moltk.Utility
         public UnityEvent onMouseOver;
 
         public UnityEvent onGUI;
+
+        [Flags]
+        public enum Event
+        {
+            InitAndDestroy = Flag._00,
+
+            Update = Flag._01,
+
+            Active = Flag._02,
+
+            Collision = Flag._03,
+
+            Trigger = Flag._04,
+
+            Mouse = Flag._05,
+
+            GUI = Flag._06,
+        }
 
         protected virtual void Awake()
         {
@@ -310,24 +328,6 @@ namespace Naukri.Moltk.Utility
             {
                 onGUI?.Invoke();
             }
-        }
-
-        [Flags]
-        public enum Event
-        {
-            InitAndDestroy = Flag._00,
-
-            Update = Flag._01,
-
-            Active = Flag._02,
-
-            Collision = Flag._03,
-
-            Trigger = Flag._04,
-
-            Mouse = Flag._05,
-
-            GUI = Flag._06,
         }
     }
 }

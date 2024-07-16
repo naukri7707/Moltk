@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.naukri.inspector-maid": "https://github.com/naukri7707/InspectorMaid.git#upm",
+    "com.naukri.physarum": "https://github.com/naukri7707/Physarum.git",
     "com.unity.collab-proxy": "2.2.0",
     "com.unity.feature.development": "1.0.1",
     "com.unity.textmeshpro": "3.0.6",

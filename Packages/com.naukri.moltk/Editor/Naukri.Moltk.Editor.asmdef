@@ -4,7 +4,9 @@
     "references": [
         "Naukri.Moltk",
         "Naukri.InspectorMaid",
-        "Naukri.InspectorMaid.Editor"
+        "Naukri.InspectorMaid.Editor",
+        "Naukri.Physarum",
+        "Naukri.Physarum.Editor"
     ],
     "includePlatforms": [
         "Editor"

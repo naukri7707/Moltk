@@ -4,11 +4,7 @@ using UnityEngine;
 
 namespace Naukri.Moltk.XRKeyboard
 {
-    [
-    ScriptField,
-    Members,
-    Base,
-]
+    [ScriptField, Members, Base,]
     public class XRKeyboardActionButton : XRKeyboardButton
     {
         [SerializeField]
@@ -20,11 +16,26 @@ namespace Naukri.Moltk.XRKeyboard
         [SerializeField, ShowIf(nameof(action), Action.SendKey)]
         protected string shiftKey;
 
-        protected override void Render()
+        public enum Action
         {
-            base.Render();
+            SendKey,
 
-            var keyboardState = keyboardController.State;
+            Backspace,
+
+            Clear,
+
+            ToggleCapslock,
+
+            Confirm,
+
+            Cancel,
+        }
+
+        protected override void Build()
+        {
+            base.Build();
+
+            var keyboardState = ctx.Watch<XRKeyboardController>().State;
 
             if (action == Action.ToggleCapslock)
             {
@@ -37,6 +48,7 @@ namespace Naukri.Moltk.XRKeyboard
 
         protected override void OnClicked()
         {
+            var keyboardController = ctx.Watch<XRKeyboardController>();
             var keyboardState = keyboardController.State;
 
             switch (action)
@@ -66,22 +78,10 @@ namespace Naukri.Moltk.XRKeyboard
                 case Action.Cancel:
                     keyboardController.Cancel();
                     break;
+
+                default:
+                    break;
             }
-        }
-
-        public enum Action
-        {
-            SendKey,
-
-            Backspace,
-
-            Clear,
-
-            ToggleCapslock,
-
-            Confirm,
-
-            Cancel,
         }
     }
 }
