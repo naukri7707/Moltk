@@ -8,7 +8,7 @@
   "dependencies": {
     "com.unity.xr.interaction.toolkit": "2.5.2",
     "com.naukri.inspector-maid": "2.12.2",
-    "com.naukri.physarum": "0.1.2",
+    "com.naukri.physarum": "0.2.2",
     "com.unityfx.outline": "0.8.5",
     "com.unity.nuget.newtonsoft-json": "3.2.1"
   },
@@ -24,34 +24,29 @@
       "path": "Samples~/XR Keyboard"
     },
     {
-      "displayName": "01_Provider",
+      "displayName": "01. Outline",
       "description": "",
-      "path": "Samples~/01_Provider"
+      "path": "Samples~/01_Outline"
     },
     {
-      "displayName": "02. Outline",
+      "displayName": "02. DataStorage",
       "description": "",
-      "path": "Samples~/02_Outline"
+      "path": "Samples~/02_DataStorage"
     },
     {
-      "displayName": "03. DataStorage",
+      "displayName": "03. UnitTree",
       "description": "",
-      "path": "Samples~/03_DataStorage"
+      "path": "Samples~/03_UnitTree"
     },
     {
-      "displayName": "04. UnitTree",
+      "displayName": "04. XRInteraction",
       "description": "",
-      "path": "Samples~/04_UnitTree"
+      "path": "Samples~/04_XRInteraction"
     },
     {
-      "displayName": "05. XRInteraction",
+      "displayName": "05. MeshDeformance",
       "description": "",
-      "path": "Samples~/05_XRInteraction"
-    },
-    {
-      "displayName": "06. MeshDeformance",
-      "description": "",
-      "path": "Samples~/06_MeshDeformance"
+      "path": "Samples~/05_MeshDeformance"
     }
   ]
 }
