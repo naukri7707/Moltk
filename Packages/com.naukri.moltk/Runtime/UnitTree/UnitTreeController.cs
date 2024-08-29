@@ -15,6 +15,8 @@ namespace Naukri.Moltk.UnitTree
     /// </summary>
     public partial class UnitTreeController : UnitTreeBehaviour
     {
+        #region fields
+
         [SerializeField]
         private bool startImmediately = true;
 
@@ -36,10 +38,48 @@ namespace Naukri.Moltk.UnitTree
         [SerializeField]
         private UnityEvent<UnitTreeEvent> eventHandler;
 
+        #endregion
+
         [Template]
         public Transform CurrentNode => currentNode;
 
         public UnityEvent<UnitTreeEvent> EventHandler => eventHandler;
+
+        #region methods
+
+        public Transform GetNext()
+        {
+            if (currentNode == null)
+            {
+                return null;
+            }
+
+            var target = LeafFinder.FindNextLeaf(currentNode);
+
+            if (!IsChild(target))
+            {
+                return null;
+            }
+
+            return target;
+        }
+
+        public Transform GetPrevious()
+        {
+            if (currentNode == null)
+            {
+                return null;
+            }
+
+            var target = LeafFinder.FindPreviousLeaf(currentNode);
+
+            if (!IsChild(target))
+            {
+                return null;
+            }
+
+            return target;
+        }
 
         /// <summary>
         /// Rolls back to the previous leaf node.
@@ -47,16 +87,14 @@ namespace Naukri.Moltk.UnitTree
         /// <returns><c>true</c> if the rollback was successful; otherwise, <c>false</c>.</returns>
         public bool RollBack()
         {
-            var previous = LeafFinder.FindPreviousLeaf(currentNode);
+            var target = GetPrevious();
 
-            // If there is no previous node or target is not a child of controller, return false
-            if (previous == null || !IsChild(previous))
+            if (target == null)
             {
                 return false;
             }
 
-            MoveToImpl(previous);
-
+            MoveToImpl(target);
             return true;
         }
 
@@ -66,17 +104,43 @@ namespace Naukri.Moltk.UnitTree
         /// <returns><c>true</c> if the move was successful; otherwise, <c>false</c>.</returns>
         public bool MoveNext()
         {
-            var next = LeafFinder.FindNextLeaf(currentNode);
+            var target = GetNext();
 
-            // If there is no next node or target is not a child of controller, return false
-            if (next == null || !IsChild(next))
+            if (target == null)
             {
                 return false;
             }
 
-            MoveToImpl(next);
-
+            MoveToImpl(target);
             return true;
+        }
+
+        /// <summary>
+        /// Gets the UnitTreeManager of target component.
+        /// </summary>
+        /// <param name="component">The component to get the UnitTreeManager from.</param>
+        /// <returns>The UnitTreeManager.</returns>
+        public static UnitTreeController Of(Component component)
+        {
+            Assert.IsNotNull(component);
+            return component.GetComponentInParent<UnitTreeController>(true);
+        }
+
+        protected override void HandleTreeEvent(UnitTreeEvent evt)
+        {
+            base.HandleTreeEvent(evt);
+            eventHandler.Invoke(evt);
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            if (startImmediately)
+            {
+                var node = customStartNode ? startNode : LeafFinder.FindFirstLeaf(transform);
+
+                MoveToImpl(node);
+            }
         }
 
         [Template]
@@ -109,23 +173,6 @@ namespace Naukri.Moltk.UnitTree
                 current = current.parent;
             }
             return false;
-        }
-
-        protected override void HandleTreeEvent(UnitTreeEvent evt)
-        {
-            base.HandleTreeEvent(evt);
-            eventHandler.Invoke(evt);
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-            if (startImmediately)
-            {
-                var node = customStartNode ? startNode : LeafFinder.FindFirstLeaf(transform);
-
-                MoveToImpl(node);
-            }
         }
 
         private void MoveToImpl(Transform target)
@@ -186,29 +233,12 @@ namespace Naukri.Moltk.UnitTree
             EnterNodesFromLCA(node.parent, lca);
             node.SendMessage(nameof(InvokeEnter), SendMessageOptions.DontRequireReceiver);
         }
-    }
 
-    [
-        HelpBox(
-            "UnitTreeController is considered as the root node and is used to control the behavior and navigation of the UnitTree.",
-            HelpBoxMessageType.Info
-        ),
-        Style(marginBottom: "4"),
-        ScriptField,
-        Base,
-        Members,
-    ]
-    partial class UnitTreeController
-    {
-        /// <summary>
-        /// Gets the UnitTreeManager of target component.
-        /// </summary>
-        /// <param name="component">The component to get the UnitTreeManager from.</param>
-        /// <returns>The UnitTreeManager.</returns>
-        public static UnitTreeController Of(Component component)
-        {
-            Assert.IsNotNull(component);
-            return component.GetComponentInParent<UnitTreeController>(true);
-        }
+        #endregion
     }
+    /// <summary>
+    /// Gets the UnitTreeManager of target component.
+    /// </summary>
+    /// <param name="component">The component to get the UnitTreeManager from.</param>
+    /// <returns>The UnitTreeManager.</returns>
 }
