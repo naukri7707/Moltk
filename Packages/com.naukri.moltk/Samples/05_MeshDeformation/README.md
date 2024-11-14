@@ -1,4 +1,4 @@
-# Mesh Deformance
+# Mesh Deformation
 
 簡單的模型變形系統，可以用來模擬簡單的物品切銷的情境。
 
@@ -9,7 +9,7 @@
 > 注意：具體的解釋在程式碼裡面！
 
 1. 你可以透過 `CubeBuilder` 生成簡易的六面體進行測試 (第 1 章)
-2. `Mesh Deformance` 系統使用了一些關鍵方法來計算節點變形位置，(第 2 ~ 5 章)
-3. 完整的 `Mesh Deformance` 使用範例 (第 6 章)
+2. 使用 `MeshDeformation` 系統使用了一些關鍵方法來計算節點變形位置，(第 2 ~ 5 章)
+3. 使用 `MeshDeformation` 變形物件 (第 6 章)
 4. 使用 `VertexModifier` 微調節點變形位置 (第 7 章)
 5. 使用 `ShaderPassLayer` 根據條件改變面的材質 (第 8 章)
