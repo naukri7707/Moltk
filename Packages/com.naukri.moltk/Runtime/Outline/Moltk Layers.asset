@@ -25,22 +25,22 @@ MonoBehaviour:
     _mergeLayerObjects: 0
   - _settings:
       _outlineSettings: {fileID: 0}
-      _outlineColor: {r: 2, g: 0.38258803, b: 0, a: 1}
-      _outlineWidth: 4
-      _outlineIntensity: 2
-      _outlineAlphaCutoff: 0.9
-      _outlineMode: 0
-    _name: Select
-    _enabled: 1
-    _mergeLayerObjects: 0
-  - _settings:
-      _outlineSettings: {fileID: 0}
       _outlineColor: {r: 0.17895675, g: 1, b: 0, a: 1}
       _outlineWidth: 4
       _outlineIntensity: 2
       _outlineAlphaCutoff: 0.9
       _outlineMode: 0
     _name: Hover
+    _enabled: 1
+    _mergeLayerObjects: 0
+  - _settings:
+      _outlineSettings: {fileID: 0}
+      _outlineColor: {r: 2, g: 0.38258803, b: 0, a: 1}
+      _outlineWidth: 4
+      _outlineIntensity: 2
+      _outlineAlphaCutoff: 0.9
+      _outlineMode: 0
+    _name: Select
     _enabled: 1
     _mergeLayerObjects: 0
   _ignoreLayerMask: 0

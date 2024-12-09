@@ -1,6 +1,7 @@
 ﻿using Naukri.Moltk.Outline;
 using Naukri.Physarum;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public record OutlinePanelState(
@@ -11,7 +12,7 @@ public record OutlinePanelState(
 
 public class OutlinePanelController : ViewController<OutlinePanelState>.Behaviour
 {
-    public GameObject targetGameObject;
+    public GameObject target;
 
     public Button highlightButton;
 
@@ -28,23 +29,23 @@ public class OutlinePanelController : ViewController<OutlinePanelState>.Behaviou
     public void Highlight()
     {
         var outlineService = ctx.Read<OutlineService>();
-        outlineService.ToggleHighlight(targetGameObject);
-        SetState(s => s with { IsHighlighted = outlineService.IsHighlighted(targetGameObject), });
+        outlineService.ToggleHighlight(target);
+        SetState(s => s with { IsHighlighted = outlineService.IsHighlighted(target), });
     }
 
     public void Hover()
     {
         var outlineService = ctx.Read<OutlineService>();
-        outlineService.ToggleHover(targetGameObject);
-        SetState(s => s with { IsHovered = outlineService.IsHovered(targetGameObject), });
+        outlineService.ToggleHover(target);
+        SetState(s => s with { IsHovered = outlineService.IsHovered(target), });
     }
 
     public void Select()
     {
         var outlineService = ctx.Read<OutlineService>();
-        outlineService.ToggleSelect(targetGameObject);
+        outlineService.ToggleSelect(target);
 
-        SetState(s => s with { IsSelected = outlineService.IsSelected(targetGameObject), });
+        SetState(s => s with { IsSelected = outlineService.IsSelected(target), });
     }
 
     protected override OutlinePanelState Build()
