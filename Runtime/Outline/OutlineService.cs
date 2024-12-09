@@ -1,5 +1,7 @@
-﻿using Naukri.InspectorMaid;
+﻿using System;
+using Naukri.InspectorMaid;
 using Naukri.InspectorMaid.Layout;
+using Naukri.Moltk.Utility;
 using Naukri.Physarum;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,22 +13,15 @@ namespace Naukri.Moltk.Outline
     {
         Highlight,
 
-        Select,
-
         Hover,
+
+        Select,
     }
+
+    public record OutlineCollectionChangedEvent(GameObject target) : IElementEvent;
 
     public partial class OutlineService : Provider.Behaviour
     {
-        [SerializeField]
-        private OutlineEffect outlineEffect;
-
-        [SerializeField]
-        private OutlineLayerCollection outlineLayers;
-
-        [SerializeField]
-        private RenderPipeline renderPipeline = RenderPipeline.BuiltIn;
-
         public enum RenderPipeline
         {
             BuiltIn,
@@ -36,19 +31,48 @@ namespace Naukri.Moltk.Outline
             HighDefinition,
         }
 
+        [SerializeField]
+        private OutlineEffect outlineEffect;
+
+        [SerializeField]
+        private OutlineLayerCollection outlineLayers;
+
+        [SerializeField]
+        private RenderPipeline renderPipeline = RenderPipeline.BuiltIn;
+
+        public Color HighlightColor
+        {
+            get => outlineLayers[(int)OutlineLayer.Highlight].OutlineColor;
+            set => outlineLayers[(int)OutlineLayer.Highlight].OutlineColor = value;
+        }
+
+        public Color HoverColor
+        {
+            get => outlineLayers[(int)OutlineLayer.Hover].OutlineColor;
+            set => outlineLayers[(int)OutlineLayer.Hover].OutlineColor = value;
+        }
+
+        public Color SelectColor
+        {
+            get => outlineLayers[(int)OutlineLayer.Select].OutlineColor;
+            set => outlineLayers[(int)OutlineLayer.Select].OutlineColor = value;
+        }
+
         private bool IsRuntime => Application.isPlaying;
 
-        public void Highlight(GameObject gameObject, bool highlight = true)
+        public void Highlight(GameObject go, bool highlight = true)
         {
             var layer = outlineLayers[(int)OutlineLayer.Highlight];
 
-            if (highlight && !layer.Contains(gameObject))
+            if (highlight && !layer.Contains(go))
             {
-                layer.Add(gameObject);
+                layer.Add(go);
+                ctx.DispatchListeners(new OutlineCollectionChangedEvent(go));
             }
-            else if (!highlight && layer.Contains(gameObject))
+            else if (!highlight && layer.Contains(go))
             {
-                layer.Remove(gameObject);
+                layer.Remove(go);
+                ctx.DispatchListeners(new OutlineCollectionChangedEvent(go));
             }
             else
             {
@@ -56,16 +80,19 @@ namespace Naukri.Moltk.Outline
             }
         }
 
-        public void Select(GameObject gameObject, bool select = true)
+        public void Select(GameObject go,  bool select = true)
         {
             var layer = outlineLayers[(int)OutlineLayer.Select];
-            if (select && !layer.Contains(gameObject))
+
+            if (select && !layer.Contains(go))
             {
-                layer.Add(gameObject);
+                layer.Add(go);
+                ctx.DispatchListeners(new OutlineCollectionChangedEvent(go));
             }
-            else if (!select && layer.Contains(gameObject))
+            else if (!select && layer.Contains(go))
             {
-                layer.Remove(gameObject);
+                layer.Remove(go);
+                ctx.DispatchListeners(new OutlineCollectionChangedEvent(go));
             }
             else
             {
@@ -73,16 +100,19 @@ namespace Naukri.Moltk.Outline
             }
         }
 
-        public void Hover(GameObject gameObject, bool hover = true)
+        public void Hover(GameObject go,  bool hover = true)
         {
             var layer = outlineLayers[(int)OutlineLayer.Hover];
-            if (hover && !layer.Contains(gameObject))
+
+            if (hover && !layer.Contains(go))
             {
-                layer.Add(gameObject);
+                layer.Add(go);
+                ctx.DispatchListeners(new OutlineCollectionChangedEvent(go));
             }
-            else if (!hover && layer.Contains(gameObject))
+            else if (!hover && layer.Contains(go))
             {
-                layer.Remove(gameObject);
+                layer.Remove(go);
+                ctx.DispatchListeners(new OutlineCollectionChangedEvent(go));
             }
             else
             {
@@ -90,43 +120,51 @@ namespace Naukri.Moltk.Outline
             }
         }
 
-        public bool IsHighlighted(GameObject gameObject)
+        public bool IsHighlighted(GameObject go)
         {
             var layer = outlineLayers[(int)OutlineLayer.Highlight];
-            return layer.Contains(gameObject);
+
+            return layer.Contains(go);
         }
 
-        public bool IsSelected(GameObject gameObject)
+        public bool IsSelected(GameObject go)
         {
             var layer = outlineLayers[(int)OutlineLayer.Select];
-            return layer.Contains(gameObject);
+
+            return layer.Contains(go);
         }
 
-        public bool IsHovered(GameObject gameObject)
+        public bool IsHovered(GameObject go)
         {
             var layer = outlineLayers[(int)OutlineLayer.Hover];
-            return layer.Contains(gameObject);
+
+            return layer.Contains(go);
+        }
+
+
+
+        [Template]
+        public void ToggleHighlight(GameObject go)
+        {
+            var toggle = !IsHighlighted(go);
+
+            Highlight(go, toggle);
         }
 
         [Template]
-        public void ToggleHighlight(GameObject gameObject)
+        public void ToggleSelect(GameObject go)
         {
-            var toggle = !IsHighlighted(gameObject);
-            Highlight(gameObject, toggle);
+            var toggle = !IsSelected(go);
+
+            Select(go, toggle);
         }
 
         [Template]
-        public void ToggleSelect(GameObject gameObject)
+        public void ToggleHover(GameObject go)
         {
-            var toggle = !IsSelected(gameObject);
-            Select(gameObject, toggle);
-        }
+            var toggle = !IsHovered(go);
 
-        [Template]
-        public void ToggleHover(GameObject gameObject)
-        {
-            var toggle = !IsHovered(gameObject);
-            Hover(gameObject, toggle);
+            Hover(go, toggle);
         }
 
         protected override void Start()
@@ -145,7 +183,7 @@ namespace Naukri.Moltk.Outline
             }
             else
             {
-                outlineEffect = Camera.main.gameObject.AddComponent<OutlineEffect>();
+                outlineEffect = mainCamera.gameObject.AddComponent<OutlineEffect>();
             }
         }
 
