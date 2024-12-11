@@ -44,9 +44,9 @@
       "path": "Samples~/04_XRInteraction"
     },
     {
-      "displayName": "05. MeshDeformance",
+      "displayName": "05. MeshDeformation",
       "description": "",
-      "path": "Samples~/05_MeshDeformance"
+      "path": "Samples~/05_MeshDeformation"
     }
   ]
 }

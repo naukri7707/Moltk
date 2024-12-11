@@ -39,8 +39,18 @@ namespace Naukri.Moltk.Outline.Tooltip
         [Style(flexGrow: "1")]
         [Button("Fix", nameof(MatchTooltipText))]
         [EndScope]
-        [TextArea(3, 5)]
-        public string tooltipText;
+        [TextArea(3, 5), SerializeField]
+        private string tooltipText;
+
+        public string TooltipText
+        {
+            get => tooltipText;
+            set
+            {
+                tooltipText = value;
+                MatchTooltipText();
+            }
+        }
 
         protected override void Build()
         {
