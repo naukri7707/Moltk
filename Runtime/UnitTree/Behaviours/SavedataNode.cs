@@ -31,7 +31,7 @@ namespace Naukri.Moltk.UnitTree.Behaviours
     [
         ScriptField,
         Base,
-        ColumnScope,
+        ColumnScope, EnableIf(nameof(IsRuntime)),
             ColumnScope, HideIf(nameof(isEditing)),
                 Label("Data Cell Json"),
                 Label(binding: nameof(DataJson)), Style(backgroundColor: "#252525"),
@@ -93,6 +93,10 @@ namespace Naukri.Moltk.UnitTree.Behaviours
 
         private string DataJson()
         {
+            if (!IsRuntime)
+            {
+                return "";
+            }
             var json = DataCell.ToJson(true);
             return json;
         }
