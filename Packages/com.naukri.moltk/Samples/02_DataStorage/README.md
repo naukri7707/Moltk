@@ -5,23 +5,27 @@ DataStorage 是一個極簡的記憶體鍵值儲資料庫，並且支援無限�
 ## 概觀
 
 ```cs
-public void Overview()
+public class DataStorageSample : Consumer.Behaviour
 {
-    // * Load savedata
-    var savedataService = MoltkManager.GetService<SavedataService>();
-    savedataService.Load();
-    var savedata = savedataService.Savedata;
-    // * Create cell
-    var cell = savedata["Cell 1"];
-    cell.CreateIfNotExist();
-    // * Set cell
-    cell.SetValue("myInt", 2048);
-    // * Get cell
-    var myInt = cell.GetValue<int>("myInt");
-    // * Delete cell
-    cell.DeleteValue("myInt");
-    // Save savedata
-    savedataService.Save();
+	public void Overview()
+	{
+			// * Get Service​
+	    var savedataService = ctx.Read<SavedataService>();
+	    // * Load savedata
+	    savedataService.Load();
+	    var savedata = savedataService.Savedata;
+	    // * Create cell
+	    var cell = savedata["Cell 1"];
+	    cell.CreateIfNotExist();
+	    // * Set cell
+	    cell.SetValue("myInt", 2048);
+	    // * Get cell
+	    var myInt = cell.GetValue<int>("myInt");
+	    // * Delete cell
+	    cell.DeleteValue("myInt");
+	    // Save savedata
+	    savedataService.Save();
+	}
 }
 ```
 
@@ -39,6 +43,7 @@ var cell = savedata["hello"];
 ### `SavedataService`
 
 `SavedataService` 是 `Savedata` 的包裝器，可以讓你在 Inspector 上更方便快捷的操作 `Savedata`。如果沒有特別的需求你應該使用他而非 `Savedata` 來建立存檔。
+
 ![SavedataService](./Docs/SavedataService.png)
 
 雖然 `SavedataService` 提供了一個自動化的載入/儲存系統，但你仍可以透過調用指定方法在特定事件中進行載入/存檔。
@@ -53,11 +58,15 @@ savedataService.Save();
 ```cs
 var savedata = savedataService.Savedata;
 ```
+
 ### `Cell`
- 
+
 Cell 是本系統中最重要的概念，任何資料都會儲存在 Cell 之中，Cell 也可以儲存另一個 Cell 達成嵌套如下圖所示：
+
 ![Cell Structure](./Docs/CellStructure.png)
+
 不過為了保護資料安全，你並不會直接使用到 `Cell` 而是使用 `CellProperty` 來間接存取資料。
+
 ### `CellProperty`
 
 `CellProeprty` 是 `Cell` 的存取工具，用來避免使用者直接操作 `Cell` 而產生非預期的行為。請參考以下範例來使用 `CellProperty`：
@@ -99,7 +108,6 @@ cell.DeleteValue("int2");           // delete value by key
 cell.ClearCell();                   // delete all values
 cell.Parent.DeleteValue("Cell 1");  // delete cell
 ```
-
 
 ## SavedataNode
 
