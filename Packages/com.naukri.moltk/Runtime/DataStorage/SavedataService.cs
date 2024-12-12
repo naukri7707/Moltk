@@ -107,6 +107,7 @@ namespace Naukri.Moltk.DataStorage
             {
                 versionConflictHandler.Invoke(savedata.version, version, savedata);
             }
+            print("Savedata loaded.");
         }
 
         [Template]
@@ -114,10 +115,11 @@ namespace Naukri.Moltk.DataStorage
         {
             if (savedata == null)
             {
-                return;
+                savedata = Savedata.LoadFromJsonFile(FilePath);
             }
             savedata.version = version;
             Savedata.SaveToJsonFile(savedata, FilePath, format);
+            print("Savedata saved.");
         }
 
         protected override void OnEnable()
