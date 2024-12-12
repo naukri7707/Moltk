@@ -45,7 +45,7 @@ namespace Naukri.Moltk.XRInteraction
 
         [SerializeField]
         [Tooltip("The limit of counter clockwise round.")]
-        private float counterClockwiseLimit = 1;
+        private float counterClockwiseRoundLimit = 1;
 
         [SerializeField]
         private UnityEvent onClockwiseLimitReached;
@@ -91,7 +91,7 @@ namespace Naukri.Moltk.XRInteraction
                 if (limitRotation)
                 {
                     var clockwiseAngleLimit = clockwiseRoundLimit * 360;
-                    var counterClockwiseAngleLimit = -counterClockwiseLimit * 360;
+                    var counterClockwiseAngleLimit = -counterClockwiseRoundLimit * 360;
 
                     var unlimitDelta = deltaAngle + Mathf.DeltaAngle(currentAngle, angle);
 
@@ -149,7 +149,7 @@ namespace Naukri.Moltk.XRInteraction
             Slot(nameof(limitRotation)),
             ColumnScope, ShowIf(nameof(limitRotation)), Style(paddingLeft: "20"),
                 Slot(nameof(clockwiseRoundLimit)),
-                Slot(nameof(counterClockwiseLimit)),
+                Slot(nameof(counterClockwiseRoundLimit)),
             EndScope,
             Slot(nameof(softRotation)),
             ColumnScope, ShowIf(nameof(softRotation)), Style(paddingLeft: "20"),
