@@ -1,116 +1,119 @@
-# DataStorage
-
-DataStorage 是一個極簡的記憶體鍵值儲資料庫，並且支援無限巢狀結構，讓一切資料只需一種方式就能快速存取。並使用 [Newtonsoft Json Unity Package](https://docs.unity3d.com/Packages/com.unity.nuget.newtonsoft-json@3.0/manual/index.html) 進行序列、反序列化，使資料以 JSON 的格式永久保存。
+# DataStorage 存檔
 
 ## 概觀
 
-```cs
-public class DataStorageSample : Consumer.Behaviour
-{
-	public void Overview()
-	{
-			// * Get Service​
-	    var savedataService = ctx.Read<SavedataService>();
-	    // * Load savedata
-	    savedataService.Load();
-	    var savedata = savedataService.Savedata;
-	    // * Create cell
-	    var cell = savedata["Cell 1"];
-	    cell.CreateIfNotExist();
-	    // * Set cell
-	    cell.SetValue("myInt", 2048);
-	    // * Get cell
-	    var myInt = cell.GetValue<int>("myInt");
-	    // * Delete cell
-	    cell.DeleteValue("myInt");
-	    // Save savedata
-	    savedataService.Save();
-	}
-}
-```
+DataStorage 模組提供了一個彈性且易用的存檔解決方案。基於鍵值結構設計，支援無限巢狀的資料組織，並使用JSON格式進行存取。透過 `SavedataService` 可以輕鬆管理存檔的讀寫，並提供自動存檔等進階功能。
 
-## 模組簡介
+![CellStructure](./Docs/CellStructure.png)
 
-### `Savedata`
+### 快速開始
 
-`Savedata` 是本功能的主要驅動器，用來管理 Cell Tree 以及載入、儲存 JSON 檔案。但絕大部分時候你只會使用他的存取器來取得 `CellProperty`，我們將在後面介紹什麼是 `CellProperty`。
-
-```cs
-var savedata = Savedata.LoadFromJson(@"{'hello': 'world'}");
-var cell = savedata["hello"];
-```
-
-### `SavedataService`
-
-`SavedataService` 是 `Savedata` 的包裝器，可以讓你在 Inspector 上更方便快捷的操作 `Savedata`。如果沒有特別的需求你應該使用他而非 `Savedata` 來建立存檔。
+1. 在場景中掛載 `SavedataService` 啟用服務
 
 ![SavedataService](./Docs/SavedataService.png)
 
-雖然 `SavedataService` 提供了一個自動化的載入/儲存系統，但你仍可以透過調用指定方法在特定事件中進行載入/存檔。
+2. 透過該服務存取及管理資料
 
-```cs
-savedataService.Load();
-savedataService.Save();
+```csharp
+using Naukri.Moltk.DataStorage;
+using Naukri.Physarum;
+using UnityEngine;
+
+public class DataStorageExample : Consumer.Behaviour
+{
+    private SavedataService savedataService;
+
+    public void SaveAndLoadData()
+    {
+        // 建立儲存單位
+        var cell = savedataService.Savedata["userData"];
+        cell.CreateIfNotExist();
+
+        // 儲存資料
+        cell.SetValue("score", 100);
+        cell.SetValue("name", "Player");
+        cell.SetCell(@"{'items': [1, 2, 3]}");
+
+        // 讀取資料
+        var score = cell.GetValue<int>("score");
+        var name = cell.GetValue<string>("name");
+
+        // 刪除資料
+        cell.DeleteValue("score");
+        cell.ClearCell();
+    }
+
+    protected override void Build()
+    {
+        savedataService = ctx.Read<SavedataService>();
+    }
+}
 ```
 
-最後在 `SavedataService` 中還有一個屬性 `Savedata` 是用來存取 `Savedata` 的實例。
+### 與單元樹整合
 
-```cs
-var savedata = savedataService.Savedata;
+透過 `SavedataNode` 組件可以快速建立與單元樹節點對應的存檔資料。
+
+3. 繼承 `SavedataNode` 並透過 `DataCell` 存取資料
+
+```csharp
+public class HelloSavedataNode : SavedataNode
+{
+    protected override void OnEnter()
+    {
+        base.OnEnter();
+        DataCell.SetValue("name", gameObject.name);
+        DataCell.SetValue("path", DataCell.Path);
+    }
+}
 ```
 
-### `Cell`
+1. 掛載實作之組件到目標節點上
 
-Cell 是本系統中最重要的概念，任何資料都會儲存在 Cell 之中，Cell 也可以儲存另一個 Cell 達成嵌套如下圖所示：
 
-![Cell Structure](./Docs/CellStructure.png)
+2. 透過 Inspector 可以在運行時預覽或編輯該節點的存檔內容
 
-不過為了保護資料安全，你並不會直接使用到 `Cell` 而是使用 `CellProperty` 來間接存取資料。
+![SavedataNode](./Docs/SavedataNode.png)
 
-### `CellProperty`
+## API 參考
 
-`CellProeprty` 是 `Cell` 的存取工具，用來避免使用者直接操作 `Cell` 而產生非預期的行為。請參考以下範例來使用 `CellProperty`：
+### SavedataService
 
-#### Create
+主要的存檔服務類別，負責管理存檔的讀寫操作。
 
-```cs
-var cell = savedata["Cell 1"];
-cell.CreateIfNotExist();
-```
+#### 屬性
 
-#### Set
+- `Savedata`: 取得當前的存檔實例
+- `FilePath`: 取得存檔檔案的完整路徑
 
-```cs
-// By JSON
-cell.SetCell(@"{ 'string': 'hello', 'int': 1024, float: 3.14, 'bool': true, 'list': [1, 2, 3], 'dict': { 'key': 'value' } }");
+#### 方法
 
-// By key-value
-cell.SetValue("int2", 2048);                     // value
-cell.SetValue("list2", new[] { 4, 5, 6 });       // list
-cell.SetValue("dict2", new { key2 = "value2" }); // dict
-```
+- `Load()`: 從檔案載入存檔
+- `Save()`: 將當前存檔寫入檔案
 
-#### Get
+### CellProperty
 
-```cs
-var str = cell.GetValue<string>("string");       // value
-var list = cell.GetValue<List<object>>("list");  // list
-var listValue = Convert.ToInt32(list[0]);        // list's value
-var dict = cell.GetValue<IDictionary<string, object>>("dict");  // dict
-var dictValue = Convert.ToString(dict["key"]);    // dict's value
-var dictValueByCell = cell["dict"].GetValue<string>("key"); // dict's value by Cell (recommend)
-```
+存檔系統的核心類別，提供資料存取介面。
 
-#### Delete
+#### 屬性
 
-```cs
-cell.DeleteValue("int2");           // delete value by key
-cell.ClearCell();                   // delete all values
-cell.Parent.DeleteValue("Cell 1");  // delete cell
-```
+- `Path`: 取得該儲存單位的完整路徑
+- `Parent`: 取得父層儲存單位
 
-## SavedataNode
+#### 方法
 
-我們還提供了一個名為 `SavedataNode` 的單元樹節點用於幫助開發者快速的在 UnitTree 上建立及查看存檔節點。請參考 `SavedataNode Sample` 場景以及 `HelloSavedataNode` 以了解如何透過繼承 `SavedataNode` 建立客製化的儲存節點。
+- `CreateIfNotExist()`: 確保儲存單位存在
+- `SetValue<T>(string key, T value)`: 設定指定鍵的值
+- `GetValue<T>(string key)`: 取得指定鍵的值
+- `SetCell(string json, bool append = false)`: 透過JSON設定儲存單位內容
+- `DeleteValue(string key)`: 刪除指定鍵的值
+- `ClearCell()`: 清空儲存單位
+- `ToJson(bool format = false)`: 將儲存單位序列化為JSON
 
-![SavedataNode](./Docs/SavedataService.png)
+### SavedataNode
+
+提供與單元樹整合的存檔節點組件。
+
+#### 屬性
+
+- `DataCell`: 取得對應該節點的儲存單位
