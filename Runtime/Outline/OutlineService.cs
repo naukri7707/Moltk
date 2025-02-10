@@ -80,7 +80,7 @@ namespace Naukri.Moltk.Outline
             }
         }
 
-        public void Select(GameObject go,  bool select = true)
+        public void Select(GameObject go, bool select = true)
         {
             var layer = outlineLayers[(int)OutlineLayer.Select];
 
@@ -100,7 +100,7 @@ namespace Naukri.Moltk.Outline
             }
         }
 
-        public void Hover(GameObject go,  bool hover = true)
+        public void Hover(GameObject go, bool hover = true)
         {
             var layer = outlineLayers[(int)OutlineLayer.Hover];
 
@@ -141,8 +141,6 @@ namespace Naukri.Moltk.Outline
             return layer.Contains(go);
         }
 
-
-
         [Template]
         public void ToggleHighlight(GameObject go)
         {
@@ -167,9 +165,13 @@ namespace Naukri.Moltk.Outline
             Hover(go, toggle);
         }
 
-        protected override void Start()
+        private bool IsOutlineLayersSynced()
         {
-            base.Start();
+            return outlineEffect.OutlineLayers == outlineLayers;
+        }
+
+        private void SyncOutlineLayers()
+        {
             outlineEffect.OutlineLayers = outlineLayers;
         }
 
@@ -186,45 +188,52 @@ namespace Naukri.Moltk.Outline
                 outlineEffect = mainCamera.gameObject.AddComponent<OutlineEffect>();
             }
         }
-
-        private bool IsLayerCollectionExists()
-        {
-            if (outlineEffect == null)
-            {
-                return false;
-            }
-
-            return outlineEffect.OutlineLayers != null;
-        }
     }
 
     [
         ScriptField,
         Base,
+        // RP Help Info
         Slot(nameof(renderPipeline)),
-        HelpBox("This pipeline is not supported yet.", HelpBoxMessageType.Error),
-        ShowIf(nameof(renderPipeline), RenderPipeline.Universal, RenderPipeline.HighDefinition),
-        ColumnScope,
-        ShowIf(nameof(renderPipeline), RenderPipeline.BuiltIn),
-        Slot(nameof(outlineEffect)),
-        RowScope,
-        ShowIf(nameof(outlineEffect), null),
-        HelpBox("You may need to add OutlineEffect to Camera.", HelpBoxMessageType.Warning),
-        Style(flexGrow: "0.8"),
-        Button("Add to MainCamera", binding: nameof(AddOutlineEffectToMainCamera)),
-        Style(flexGrow: "0.2"),
-        EndScope,
-        Slot(nameof(outlineLayers)),
         HelpBox(
-            @"You assign a value to the OutlineEffect's outlineLayers, but OutlineService will replace it.",
+            "This pipeline is supported, but you need to manually adjust the universal render data, add outline feature and provide MoltkLayers.",
             HelpBoxMessageType.Warning
         ),
-        ShowIf(nameof(IsLayerCollectionExists)),
+        ShowIf(nameof(renderPipeline), RenderPipeline.Universal),
+        HelpBox("This pipeline is not supported yet.", HelpBoxMessageType.Error),
+        ShowIf(nameof(renderPipeline), RenderPipeline.HighDefinition),
+        // OutlineEffect (BuiltIn-RP ONLY)
+        ColumnScope,
+            ShowIf(nameof(renderPipeline), RenderPipeline.BuiltIn),
+            Slot(nameof(outlineEffect)),
+            RowScope,
+                ShowIf(nameof(outlineEffect), null),
+                HelpBox("You may need to add OutlineEffect to Main Camera.", HelpBoxMessageType.Warning),
+                Style(flexGrow: "0.8"),
+                Button("Add to MainCamera", binding: nameof(AddOutlineEffectToMainCamera)),
+                Style(flexGrow: "0.2"),
+            EndScope,
         EndScope,
+        // OutlineLayers (All supported RP)
+        ColumnScope,
+            EnableIf(nameof(renderPipeline), RenderPipeline.BuiltIn, RenderPipeline.Universal),
+            Slot(nameof(outlineLayers)),
+            RowScope,
+                ShowIf(nameof(IsOutlineLayersSynced), false),
+                HelpBox(
+                    "You may need to sync OutlineLayers with OutlineEffect.",
+                    HelpBoxMessageType.Warning
+                ),
+                Style(flexGrow: "0.8"),
+                Button("Sync", binding: nameof(SyncOutlineLayers)),
+                Style(flexGrow: "0.2"),
+            EndScope,
+        EndScope,
+        // Features
         ColumnScope,
         EnableIf(nameof(IsRuntime)),
-        Slot(nameof(ToggleHighlight), nameof(ToggleSelect), nameof(ToggleHover)),
-        EndScope,
+                Slot(nameof(ToggleHighlight), nameof(ToggleSelect), nameof(ToggleHover)),
+        EndScope
     ]
     partial class OutlineService { }
 }
