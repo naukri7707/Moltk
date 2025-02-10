@@ -167,6 +167,11 @@ namespace Naukri.Moltk.Outline
 
         private bool IsOutlineLayersSynced()
         {
+            if(outlineEffect == null)
+            {
+                return false;
+            }
+
             return outlineEffect.OutlineLayers == outlineLayers;
         }
 
