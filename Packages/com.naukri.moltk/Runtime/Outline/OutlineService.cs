@@ -201,7 +201,7 @@ namespace Naukri.Moltk.Outline
         // RP Help Info
         Slot(nameof(renderPipeline)),
         HelpBox(
-            "This pipeline is supported, but you need to manually adjust the universal render data, add outline feature and provide MoltkLayers.",
+            "This pipeline is supported, but you need to manually adjust the Universal Render Data, add outline feature and provide MoltkLayers.",
             HelpBoxMessageType.Warning
         ),
         ShowIf(nameof(renderPipeline), RenderPipeline.Universal),
@@ -211,6 +211,7 @@ namespace Naukri.Moltk.Outline
         ColumnScope,
             ShowIf(nameof(renderPipeline), RenderPipeline.BuiltIn),
             Slot(nameof(outlineEffect)),
+            // OutlineEffect Added Check
             RowScope,
                 ShowIf(nameof(outlineEffect), null),
                 HelpBox("You may need to add OutlineEffect to Main Camera.", HelpBoxMessageType.Warning),
@@ -218,11 +219,7 @@ namespace Naukri.Moltk.Outline
                 Button("Add to MainCamera", binding: nameof(AddOutlineEffectToMainCamera)),
                 Style(flexGrow: "0.2"),
             EndScope,
-        EndScope,
-        // OutlineLayers (All supported RP)
-        ColumnScope,
-            EnableIf(nameof(renderPipeline), RenderPipeline.BuiltIn, RenderPipeline.Universal),
-            Slot(nameof(outlineLayers)),
+            // OutlineLayers Synced Check
             RowScope,
                 ShowIf(nameof(IsOutlineLayersSynced), false),
                 HelpBox(
@@ -233,6 +230,11 @@ namespace Naukri.Moltk.Outline
                 Button("Sync", binding: nameof(SyncOutlineLayers)),
                 Style(flexGrow: "0.2"),
             EndScope,
+        EndScope,
+        // OutlineLayers (All supported RP)
+        ColumnScope,
+            EnableIf(nameof(renderPipeline), RenderPipeline.BuiltIn, RenderPipeline.Universal),
+            Slot(nameof(outlineLayers)),
         EndScope,
         // Features
         ColumnScope,
